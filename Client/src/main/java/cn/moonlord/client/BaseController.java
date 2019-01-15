@@ -19,7 +19,7 @@ public class BaseController implements ErrorController {
 
     @ApiOperation(value="基础 index 服务", notes="用于处理根路径的请求")
     @RequestMapping(value = "/", method = { RequestMethod.GET, RequestMethod.POST} )
-    public String index() throws Exception {
+    public String index(){
         return "This is Index Page. <br/>"
                 + "Hello World!";
     }
