@@ -1,8 +1,10 @@
 @echo off
 
 set "jar_file=target\starter-0.0.1-SNAPSHOT.jar"
-if not exist "%jar_file%" (
+if not exist "target" (
     mkdir "target"
+)
+if not exist "%jar_file%" (
     call mvn install
 )
 

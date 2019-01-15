@@ -3,8 +3,10 @@
 set "main_class=cn.moonlord.server.ServerApplication"
 
 set "jar_file=target\server-0.0.1-SNAPSHOT.jar.original"
-if not exist "%jar_file%" (
+if not exist "target" (
     mkdir "target"
+)
+if not exist "%jar_file%" (
     call mvn install
 )
 
