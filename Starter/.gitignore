@@ -28,3 +28,7 @@
 .mvn
 mvnw
 mvnw.cmd
+
+### Logs ###
+logs
+
