@@ -3,7 +3,7 @@
 set "server_port=8091"
 
 set "jar_file=target\server-0.0.1-SNAPSHOT.jar"
-if not exist "target" (
+if not exist "%jar_file%" (
     mkdir "target"
     call mvn install
 )

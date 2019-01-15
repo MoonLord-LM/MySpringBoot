@@ -3,7 +3,7 @@
 set "main_class=cn.moonlord.starter.StarterApplication"
 
 set "jar_file=target\starter-0.0.1-SNAPSHOT.jar.original"
-if not exist "target" (
+if not exist "%jar_file%" (
     mkdir "target"
     call mvn install
 )
