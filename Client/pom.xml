@@ -29,23 +29,6 @@
             <artifactId>spring-boot-starter-web</artifactId>
         </dependency>
 
-        <!-- 测试相关 -->
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-test</artifactId>
-            <!-- 仅在测试范围有效，不会被打包 -->
-            <scope>test</scope>
-        </dependency>
-
-        <!-- 热启动调试 -->
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-devtools</artifactId>
-            <scope>provided</scope>
-            <optional>true</optional>
-            <!-- 依赖不传递，依赖本项目的其它项目不会自动引入 devtools -->
-        </dependency>
-
         <!-- 自动化文档 Swagger -->
         <dependency>
             <groupId>io.springfox</groupId>
@@ -69,6 +52,23 @@
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-starter-netflix-eureka-client</artifactId>
             <version>[2.0.2,)</version>
+        </dependency>
+
+        <!-- 测试相关 -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+            <!-- 仅在测试范围有效，不会被打包 -->
+            <scope>test</scope>
+        </dependency>
+
+        <!-- 热启动调试 -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-devtools</artifactId>
+            <scope>provided</scope>
+            <optional>true</optional>
+            <!-- 依赖不传递，依赖本项目的其它项目不会自动引入 devtools -->
         </dependency>
 
     </dependencies>
