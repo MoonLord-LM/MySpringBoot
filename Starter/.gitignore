@@ -31,3 +31,4 @@ mvnw.cmd
 
 ### Logs ###
 logs
+*.log
