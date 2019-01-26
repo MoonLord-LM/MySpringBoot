@@ -7,7 +7,7 @@ cd "Starter" && call :clean && cd ..
 pause
 exit
 
-:clean - 清除编译结果和日志
+:clean
     rmdir /S /Q "target"
     rmdir /S /Q "logs"
     del /F /S /Q "*.log"
