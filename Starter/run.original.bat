@@ -17,7 +17,12 @@ if not exist "%lib_path%" (
     call mvn dependency:copy-dependencies -DincludeScope=runtime -DoutputDirectory="%lib_path%"
 )
 
-echo java -cp "%jar_file%" -Djava.ext.dirs="%JAVA_HOME%\jre\lib\ext;%lib_path%;" "%main_class%" ^>^>"%~n0.log" 2^>^>^&1
-java -cp "%jar_file%" -Djava.ext.dirs="%JAVA_HOME%\jre\lib\ext;%lib_path%;" "%main_class%" >>"%~n0.log" 2>>&1
+set "log_file=logs\%~n0.log"
+if not exist "logs" (
+    mkdir "logs"
+)
+
+echo java -cp "%jar_file%" -Djava.ext.dirs="%JAVA_HOME%\jre\lib\ext;%lib_path%;" "%main_class%" ^>^>"%log_file%" 2^>^>^&1
+java -cp "%jar_file%" -Djava.ext.dirs="%JAVA_HOME%\jre\lib\ext;%lib_path%;" "%main_class%" >>"%log_file%" 2>>&1
 
 exit

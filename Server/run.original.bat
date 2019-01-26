@@ -10,6 +10,11 @@ if not exist "%jar_file%" (
     call mvn install
 )
 
+set "log_file=logs\%~n0.log"
+if not exist "logs" (
+    mkdir "logs"
+)
+
 set "lib_path=target\lib"
 :: del /F /S /Q "%lib_path%"
 if not exist "%lib_path%" (
@@ -17,7 +22,7 @@ if not exist "%lib_path%" (
     call mvn dependency:copy-dependencies -DincludeScope=runtime -DoutputDirectory="%lib_path%"
 )
 
-echo java -cp "%jar_file%" -Djava.ext.dirs="%JAVA_HOME%\jre\lib\ext;%lib_path%;" "%main_class%" ^>^>"%~n0.log" 2^>^>^&1
-java -cp "%jar_file%" -Djava.ext.dirs="%JAVA_HOME%\jre\lib\ext;%lib_path%;" "%main_class%" >>"%~n0.log" 2>>&1
+echo java -cp "%jar_file%" -Djava.ext.dirs="%JAVA_HOME%\jre\lib\ext;%lib_path%;" "%main_class%" ^>^>"%log_file%" 2^>^>^&1
+java -cp "%jar_file%" -Djava.ext.dirs="%JAVA_HOME%\jre\lib\ext;%lib_path%;" "%main_class%" >>"%log_file%" 2>>&1
 
 exit

@@ -10,10 +10,15 @@ if not exist "%jar_file%" (
     call mvn install
 )
 
+set "log_file=logs\%~n0.log"
+if not exist "logs" (
+    mkdir "logs"
+)
+
 copy /B "%jar_file%" "%jar_file%.%active_profiles%"
 set "jar_file=%jar_file%.%active_profiles%"
 
-echo java -jar "%jar_file%" --spring.profiles.active=%active_profiles% ^>^>"%~n0.log" 2^>^>^&1
-java -jar "%jar_file%" --spring.profiles.active=%active_profiles% >>"%~n0.log" 2>>&1
+echo java -jar "%jar_file%" --spring.profiles.active=%active_profiles% ^>^>"%log_file%" 2^>^>^&1
+java -jar "%jar_file%" --spring.profiles.active=%active_profiles% >>"%log_file%" 2>>&1
 
 exit

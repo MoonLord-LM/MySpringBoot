@@ -8,7 +8,12 @@ if not exist "%jar_file%" (
     call mvn install
 )
 
-echo java -jar "%jar_file%" ^>^>"%~n0.log" 2^>^>^&1
-java -jar "%jar_file%" >>"%~n0.log" 2>>&1
+set "log_file=logs\%~n0.log"
+if not exist "logs" (
+    mkdir "logs"
+)
+
+echo java -jar "%jar_file%" ^>^>"%log_file%" 2^>^>^&1
+java -jar "%jar_file%" >>"%log_file%" 2>>&1
 
 exit
