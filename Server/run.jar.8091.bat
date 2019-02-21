@@ -1,4 +1,5 @@
 @echo off
+chcp 65001 REM UTF-8
 
 set "active_profiles=8091"
 
