@@ -1,5 +1,5 @@
 @echo off
-chcp 65001 REM UTF-8
+chcp 65001
 
 set "jar_file=target\client-0.0.1-SNAPSHOT.jar"
 if not exist "target" (
