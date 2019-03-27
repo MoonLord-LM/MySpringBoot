@@ -1,7 +1,15 @@
-/target/
-!.mvn/wrapper/maven-wrapper.jar
+### IntelliJ IDEA ###
+.idea
+*.iws
+*.iml
+*.ipr
 
-### STS ###
+### Maven ###
+.mvn
+mvnw
+mvnw.cmd
+
+### Spring Tool Suite ###
 .apt_generated
 .classpath
 .factorypath
@@ -9,12 +17,6 @@
 .settings
 .springBeans
 .sts4-cache
-
-### IntelliJ IDEA ###
-.idea
-*.iws
-*.iml
-*.ipr
 
 ### NetBeans ###
 /nbproject/private/
@@ -24,11 +26,7 @@
 /nbdist/
 /.nb-gradle/
 
-### Maven ###
-.mvn
-mvnw
-mvnw.cmd
-
-### Logs ###
+### Temp File ###
+*/target/
 logs
 *.log

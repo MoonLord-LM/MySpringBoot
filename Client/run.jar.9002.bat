@@ -16,7 +16,10 @@ if not exist "logs" (
     mkdir "logs"
 )
 
-copy /B "%jar_file%" "%jar_file%.%active_profiles%"
+if not exist "%jar_file%.%active_profiles%" (
+    copy /B "%jar_file%" "%jar_file%.%active_profiles%"
+)
+
 set "jar_file=%jar_file%.%active_profiles%"
 
 echo java -jar "%jar_file%" --spring.profiles.active=%active_profiles% ^>^>"%log_file%" 2^>^>^&1
