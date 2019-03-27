@@ -21,7 +21,7 @@ public class BaseController implements ErrorController {
     @RequestMapping(value = "/", method = { RequestMethod.GET, RequestMethod.POST} )
     public String index(){
         return "This is Index Page. <br/>"
-                + "Hello World!";
+                + "<a href=\"/swagger-ui.html\">/swagger-ui.html</a>";
     }
 
     @ApiOperation(value="基础 error 服务", notes="用于处理出错的请求")
@@ -37,7 +37,7 @@ public class BaseController implements ErrorController {
         }
         return "This is Error Page. <br/>"
                 + "Request URI: " + request_uri + " <br/>"
-                + "Error Code: " + status_code + " <br/>";
+                + "Status Code: " + status_code + " <br/>";
     }
 
 }
