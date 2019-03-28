@@ -18,13 +18,16 @@ public class BaseController implements ErrorController {
     @Override
     public String getErrorPath() { return null; }
 
+    @Value("${server.port}")
+    String serverPort;
+
     @Value("swagger-ui.html")
     String swaggerDashBoardPath;
 
     @ApiOperation(value="基础 index 服务", notes="用于处理根路径的请求")
     @RequestMapping(value = "/", method = { RequestMethod.GET, RequestMethod.POST} )
     public String index(){
-        return "This is Index Page. <br/>"
+        return "This is Index Page at port: " + serverPort + ". <br/>"
                 + "<a href=\"" + swaggerDashBoardPath + "\">" + swaggerDashBoardPath + "</a><br/>";
     }
 

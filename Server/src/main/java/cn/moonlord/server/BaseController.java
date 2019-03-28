@@ -15,6 +15,9 @@ public class BaseController implements ErrorController {
     @Override
     public String getErrorPath() { return null; }
 
+    @Value("${server.port}")
+    String serverPort;
+
     @Value("swagger-ui.html")
     String swaggerDashBoardPath;
 
@@ -23,7 +26,7 @@ public class BaseController implements ErrorController {
 
     @RequestMapping(value = "/", method = { RequestMethod.GET, RequestMethod.POST} )
     public String index(){
-        return "This is Index Page. <br/>"
+        return "This is Index Page at port: " + serverPort + ". <br/>"
                 + "<a href=\"" + swaggerDashBoardPath + "\">" + swaggerDashBoardPath + "</a><br/>"
                 + "<a href=\"" + eurekaDashBoardPath + "\">" + eurekaDashBoardPath + "</a><br/>";
     }
