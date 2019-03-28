@@ -1,5 +1,7 @@
 package cn.moonlord.server;
 
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.servlet.error.ErrorController;
 import org.springframework.http.HttpStatus;
@@ -9,6 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
 
+@Api
 @RestController
 public class BaseController implements ErrorController {
 
@@ -24,6 +27,7 @@ public class BaseController implements ErrorController {
     @Value("${eureka.dashboard.path}")
     String eurekaDashBoardPath;
 
+    @ApiOperation(value="基础 index 服务", notes="用于处理根路径的请求")
     @RequestMapping(value = "/", method = { RequestMethod.GET, RequestMethod.POST} )
     public String index(){
         return "This is Index Page at port: " + serverPort + ". <br/>"
@@ -31,6 +35,7 @@ public class BaseController implements ErrorController {
                 + "<a href=\"" + eurekaDashBoardPath + "\">" + eurekaDashBoardPath + "</a><br/>";
     }
 
+    @ApiOperation(value="基础 error 服务", notes="用于处理出错的请求")
     @RequestMapping(value = "/error", method = { RequestMethod.GET, RequestMethod.POST} )
     public String error(HttpServletRequest request) {
         String request_uri = (String) request.getAttribute("javax.servlet.error.request_uri");
