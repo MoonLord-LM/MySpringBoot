@@ -24,8 +24,8 @@ public class BaseController implements ErrorController {
     @RequestMapping(value = "/", method = { RequestMethod.GET, RequestMethod.POST} )
     public String index(){
         return "This is Index Page. <br/>"
-                + "<a href=\"" + swaggerDashBoardPath + "\">" + swaggerDashBoardPath + "</a><br/>"
-                + "<a href=\"" + eurekaDashBoardPath + "\">" + eurekaDashBoardPath + "</a><br/>";
+                + "<a href=\"" + swaggerDashBoardPath + "\">./" + swaggerDashBoardPath + "</a><br/>"
+                + "<a href=\"" + eurekaDashBoardPath + "\">./" + eurekaDashBoardPath + "</a><br/>";
     }
 
     @RequestMapping(value = "/error", method = { RequestMethod.GET, RequestMethod.POST} )

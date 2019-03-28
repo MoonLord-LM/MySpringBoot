@@ -25,7 +25,7 @@ public class BaseController implements ErrorController {
     @RequestMapping(value = "/", method = { RequestMethod.GET, RequestMethod.POST} )
     public String index(){
         return "This is Index Page. <br/>"
-                + "<a href=\"" + swaggerDashBoardPath + "\">" + swaggerDashBoardPath + "</a><br/>";
+                + "<a href=\"" + swaggerDashBoardPath + "\">./" + swaggerDashBoardPath + "</a><br/>";
     }
 
     @ApiOperation(value="基础 error 服务", notes="用于处理出错的请求")
