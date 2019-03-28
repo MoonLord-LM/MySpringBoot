@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
 
-@RestController
 @EnableEurekaServer
 @EnableZuulProxy
 @SpringBootApplication
