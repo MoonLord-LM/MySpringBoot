@@ -15,12 +15,16 @@ public class BaseController implements ErrorController {
     @Override
     public String getErrorPath() { return null; }
 
+    @Value("swagger-ui.html")
+    String swaggerDashBoardPath;
+
     @Value("${eureka.dashboard.path}")
     String eurekaDashBoardPath;
 
     @RequestMapping(value = "/", method = { RequestMethod.GET, RequestMethod.POST} )
     public String index(){
         return "This is Index Page. <br/>"
+                + "<a href=\"" + swaggerDashBoardPath + "\">" + swaggerDashBoardPath + "</a>"
                 + "<a href=\"" + eurekaDashBoardPath + "\">" + eurekaDashBoardPath + "</a>";
     }
 
