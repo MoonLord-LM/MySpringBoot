@@ -2,6 +2,7 @@ package cn.moonlord.client;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.servlet.error.ErrorController;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -17,11 +18,14 @@ public class BaseController implements ErrorController {
     @Override
     public String getErrorPath() { return null; }
 
+    @Value("swagger-ui.html")
+    String swaggerDashBoardPath;
+
     @ApiOperation(value="基础 index 服务", notes="用于处理根路径的请求")
     @RequestMapping(value = "/", method = { RequestMethod.GET, RequestMethod.POST} )
     public String index(){
         return "This is Index Page. <br/>"
-                + "<a href=\"/swagger-ui.html\">/swagger-ui.html</a>";
+                + "<a href=\"" + swaggerDashBoardPath + "\">" + swaggerDashBoardPath + "</a>";
     }
 
     @ApiOperation(value="基础 error 服务", notes="用于处理出错的请求")
