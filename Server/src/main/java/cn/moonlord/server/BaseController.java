@@ -27,12 +27,16 @@ public class BaseController implements ErrorController {
     @Value("${eureka.dashboard.path}")
     String eurekaDashBoardPath;
 
+    @Value("${spring.boot.admin.context-path}")
+    String adminDashBoardPath;
+
     @ApiOperation(value="基础 index 服务", notes="用于处理根路径的请求")
     @RequestMapping(value = "/", method = { RequestMethod.GET, RequestMethod.POST} )
     public String index(){
         return "This is Index Page at port: " + serverPort + ". <br/>"
                 + "<a href=\"" + swaggerDashBoardPath + "\">" + swaggerDashBoardPath + "</a><br/>"
-                + "<a href=\"" + eurekaDashBoardPath + "\">" + eurekaDashBoardPath + "</a><br/>";
+                + "<a href=\"" + eurekaDashBoardPath + "\">" + eurekaDashBoardPath + "</a><br/>"
+                + "<a href=\"" + adminDashBoardPath + "\">" + adminDashBoardPath + "</a><br/>";
     }
 
     @ApiOperation(value="基础 error 服务", notes="用于处理出错的请求")
