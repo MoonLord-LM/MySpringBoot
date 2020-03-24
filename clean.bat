@@ -10,5 +10,4 @@ exit
 :clean
     rmdir /S /Q "target"
     rmdir /S /Q "logs"
-    del /F /S /Q "*.log"
 goto :eof
