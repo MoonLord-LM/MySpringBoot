@@ -41,6 +41,13 @@
             <version>[2.9.2,)</version>
         </dependency>
 
+        <!-- 测试 XXE -->
+        <dependency>
+            <groupId>com.thoughtworks.xstream</groupId>
+            <artifactId>xstream</artifactId>
+            <version>1.4.11.1</version>
+        </dependency>
+
         <!-- 测试相关 -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
