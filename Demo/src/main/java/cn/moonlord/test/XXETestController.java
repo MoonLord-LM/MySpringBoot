@@ -86,10 +86,10 @@ public class XXETestController {
         return data;
     }
 
-    @ApiOperation(value="JAXP (Java API for XML Processing)，测试用例 1，使用默认的设置解析 XML，存在 XXE 漏洞，可回显文件內容，可发送 Http 请求，但是不能在请求中传递参数")
+    @ApiOperation(value="JAXP (Java API for XML Processing)，测试用例 01，使用默认的设置解析 XML，存在 XXE 漏洞，可回显文件內容，可发送 Http 请求，但是请求的参数不会被解析为实体")
     @ApiImplicitParams(@ApiImplicitParam(name = "inputXML", value = "输入的 XML 参数", example = testCase1))
-    @GetMapping(value = "/japx/test1")
-    public String JAXPTest1(@RequestParam String inputXML) throws Exception {
+    @GetMapping(value = "/japx/test01")
+    public String JAXPTest01(@RequestParam String inputXML) throws Exception {
         // input
         initJAXP();
         DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
@@ -112,10 +112,37 @@ public class XXETestController {
         return result;
     }
 
-    @ApiOperation(value="JAXP (Java API for XML Processing)，测试用例 2，在测试用例 1 的基础上，关闭实体引用扩展 setExpandEntityReferences(false)，不可回显，但是实体仍会被解析，http 请求仍会发送")
+    @ApiOperation(value="JAXP (Java API for XML Processing)，测试用例 02，在测试用例 01 的基础上，关闭 XMLConstants.FEATURE_SECURE_PROCESSING，无效果")
     @ApiImplicitParams(@ApiImplicitParam(name = "inputXML", value = "输入的 XML 参数", example = testCase1))
-    @GetMapping(value = "/japx/test2")
-    public String JAXPTest2(@RequestParam String inputXML) throws Exception {
+    @GetMapping(value = "/japx/test02")
+    public String JAXPTest02(@RequestParam String inputXML) throws Exception {
+        // input
+        initJAXP();
+        DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
+        System.out.println("documentBuilderFactory: " + documentBuilderFactory.getClass().getName());
+        documentBuilderFactory.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, false);
+        DocumentBuilder documentBuilder = documentBuilderFactory.newDocumentBuilder();
+        System.out.println("documentBuilder: " + documentBuilder.getClass().getName());
+        Document document = documentBuilder.parse(new ByteArrayInputStream(inputXML.getBytes()));
+        System.out.println("document: " + document.getClass().getName());
+        System.out.println("content: " + "\r\n" + document.getDocumentElement().getTextContent());
+        // output
+        StringWriter stringWriter = new StringWriter();
+        TransformerFactory transformerFactory = TransformerFactory.newInstance();
+        System.out.println("transformerFactory: " + transformerFactory.getClass().getName());
+        Transformer transformer = transformerFactory.newTransformer();
+        System.out.println("transformer: " + transformer.getClass().getName());
+        transformer.setOutputProperty(OutputKeys.INDENT, "yes");
+        transformer.transform(new DOMSource(document), new StreamResult(stringWriter));
+        String result = stringWriter.getBuffer().toString();
+        System.out.println("result: " + "\r\n" + result);
+        return result;
+    }
+
+    @ApiOperation(value="JAXP (Java API for XML Processing)，测试用例 03，在测试用例 01 的基础上，关闭实体引用扩展 setExpandEntityReferences(false)，不可回显，但是实体仍会被解析，http 请求仍会发送")
+    @ApiImplicitParams(@ApiImplicitParam(name = "inputXML", value = "输入的 XML 参数", example = testCase1))
+    @GetMapping(value = "/japx/test03")
+    public String JAXPTest03(@RequestParam String inputXML) throws Exception {
         // input
         initJAXP();
         DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
@@ -139,37 +166,10 @@ public class XXETestController {
         return result;
     }
 
-    @ApiOperation(value="JAXP (Java API for XML Processing)，测试用例 3，在测试用例 1 的基础上，关闭 XMLConstants.FEATURE_SECURE_PROCESSING，无效果")
+    @ApiOperation(value="JAXP (Java API for XML Processing)，测试用例 04，禁用外部实体和 DTD 引用，可防御 XXE 攻击（推荐方法）")
     @ApiImplicitParams(@ApiImplicitParam(name = "inputXML", value = "输入的 XML 参数", example = testCase1))
-    @GetMapping(value = "/japx/test3")
-    public String JAXPTest3(@RequestParam String inputXML) throws Exception {
-        // input
-        initJAXP();
-        DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
-        System.out.println("documentBuilderFactory: " + documentBuilderFactory.getClass().getName());
-        documentBuilderFactory.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, false);
-        DocumentBuilder documentBuilder = documentBuilderFactory.newDocumentBuilder();
-        System.out.println("documentBuilder: " + documentBuilder.getClass().getName());
-        Document document = documentBuilder.parse(new ByteArrayInputStream(inputXML.getBytes()));
-        System.out.println("document: " + document.getClass().getName());
-        System.out.println("content: " + "\r\n" + document.getDocumentElement().getTextContent());
-        // output
-        StringWriter stringWriter = new StringWriter();
-        TransformerFactory transformerFactory = TransformerFactory.newInstance();
-        System.out.println("transformerFactory: " + transformerFactory.getClass().getName());
-        Transformer transformer = transformerFactory.newTransformer();
-        System.out.println("transformer: " + transformer.getClass().getName());
-        transformer.setOutputProperty(OutputKeys.INDENT, "yes");
-        transformer.transform(new DOMSource(document), new StreamResult(stringWriter));
-        String result = stringWriter.getBuffer().toString();
-        System.out.println("result: " + "\r\n" + result);
-        return result;
-    }
-
-    @ApiOperation(value="JAXP (Java API for XML Processing)，测试用例 4，禁用外部实体和 DTD 引用，可防御 XXE 攻击")
-    @ApiImplicitParams(@ApiImplicitParam(name = "inputXML", value = "输入的 XML 参数", example = testCase1))
-    @GetMapping(value = "/japx/test4")
-    public String JAXPTest4(@RequestParam String inputXML) throws Exception {
+    @GetMapping(value = "/japx/test04")
+    public String JAXPTest04(@RequestParam String inputXML) throws Exception {
         // input
         initJAXP();
         DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
@@ -198,10 +198,10 @@ public class XXETestController {
         return result;
     }
 
-    @ApiOperation(value="JAXP (Java API for XML Processing)，测试用例 5，禁用 DTD 声明，直接报错，可防御 XXE 攻击")
+    @ApiOperation(value="JAXP (Java API for XML Processing)，测试用例 05，禁用 DTD 声明，直接报错，可防御 XXE 攻击")
     @ApiImplicitParams(@ApiImplicitParam(name = "inputXML", value = "输入的 XML 参数", example = testCase1))
-    @GetMapping(value = "/japx/test5")
-    public String JAXPTest5(@RequestParam String inputXML) throws Exception {
+    @GetMapping(value = "/japx/test05")
+    public String JAXPTest05(@RequestParam String inputXML) throws Exception {
         // input
         initJAXP();
         DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
@@ -225,17 +225,17 @@ public class XXETestController {
         return result;
     }
 
-    @ApiOperation(value="JAXP (Java API for XML Processing)，测试用例 6，受到 XMLConstants.FEATURE_SECURE_PROCESSING 的限制，默认的设置下，最多支持 64000 个实体扩展，超出时会直接报错")
+    @ApiOperation(value="JAXP (Java API for XML Processing)，测试用例 11，默认 XMLConstants.FEATURE_SECURE_PROCESSING 限制打开，最多支持 64000 个实体扩展，超出时会直接报错")
     @ApiImplicitParams(@ApiImplicitParam(name = "inputXML", value = "输入的 XML 参数", example = testCase2))
-    @GetMapping(value = "/japx/test6")
-    public String JAXPTest6(@RequestParam String inputXML) throws Exception {
-        return JAXPTest2(inputXML);
+    @GetMapping(value = "/japx/test11")
+    public String JAXPTest11(@RequestParam String inputXML) throws Exception {
+        return JAXPTest01(inputXML);
     }
 
-    @ApiOperation(value="JAXP (Java API for XML Processing)，测试用例 7，关闭 XMLConstants.FEATURE_SECURE_PROCESSING 的限制，堆内存溢出，导致拒绝服务")
+    @ApiOperation(value="JAXP (Java API for XML Processing)，测试用例 12，关闭 XMLConstants.FEATURE_SECURE_PROCESSING 的限制，堆内存溢出，导致拒绝服务")
     @ApiImplicitParams(@ApiImplicitParam(name = "inputXML", value = "输入的 XML 参数", example = testCase2))
-    @GetMapping(value = "/japx/test7")
-    public String JAXPTest7(@RequestParam String inputXML) throws Exception {
+    @GetMapping(value = "/japx/test12")
+    public String JAXPTest12(@RequestParam String inputXML) throws Exception {
         // input
         initJAXP();
         DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
@@ -265,9 +265,9 @@ public class XXETestController {
         return result;
     }
 
-    @ApiOperation(value="JAXP (Java API for XML Processing)，测试用例 8，在测试用例 6 的基础上，关闭实体引用扩展 setExpandEntityReferences(false)，但是实体仍会被解析，堆内存溢出，导致拒绝服务")
+    @ApiOperation(value="JAXP (Java API for XML Processing)，测试用例 13，在测试用例 12 的基础上，关闭实体引用扩展 setExpandEntityReferences(false)，无效果")
     @ApiImplicitParams(@ApiImplicitParam(name = "inputXML", value = "输入的 XML 参数", example = testCase2))
-    @GetMapping(value = "/japx/test8")
+    @GetMapping(value = "/japx/test13")
     public String JAXPTest8(@RequestParam String inputXML) throws Exception {
         // input
         initJAXP();
@@ -299,11 +299,11 @@ public class XXETestController {
         return result;
     }
 
-    @ApiOperation(value="JAXP (Java API for XML Processing)，测试用例 9，禁用 DTD 声明，直接报错，实体不会被解析")
+    @ApiOperation(value="JAXP (Java API for XML Processing)，测试用例 14，禁用 DTD 声明，直接报错，实体不会被解析")
     @ApiImplicitParams(@ApiImplicitParam(name = "inputXML", value = "输入的 XML 参数", example = testCase2))
-    @GetMapping(value = "/japx/test9")
-    public String JAXPTest9(@RequestParam String inputXML) throws Exception {
-        return JAXPTest4(inputXML);
+    @GetMapping(value = "/japx/test14")
+    public String JAXPTest14(@RequestParam String inputXML) throws Exception {
+        return JAXPTest05(inputXML);
     }
 
 }
