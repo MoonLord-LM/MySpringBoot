@@ -115,11 +115,13 @@ public class XXETestController {
     @GetMapping(value = "/sendDataElement")
     public String sendDataElement(@RequestParam(defaultValue = "") String data, HttpServletRequest request) {
         data =
+                "<![CDATA[" + "\r\n" +
                 "<sendDataElement>" + "\r\n" +
                         "[URL: " + request.getRequestURL() + "?" + request.getQueryString() +"]" + "\r\n" +
                         "[data length: " + data.length() +"]" + "\r\n" +
                         data + "\r\n" +
-                "</sendDataElement>"
+                "</sendDataElement>" + "\r\n" +
+                "]]>"
         ;
         System.err.println(data);
         return data;
