@@ -237,11 +237,12 @@ public class XXETestController {
         return (outputXML(documentBuilderFactory, inputXML));
     }
 
-    @ApiOperation(value="JAXP (Java API for XML Processing)，测试用例 C5，禁用 DTD 声明，直接报错，实体不会被解析")
+    @ApiOperation(value="JAXP (Java API for XML Processing)，测试用例 C5，在测试用例 C2 的基础上，禁用 DTD 声明，直接报错，内存不会溢出")
     @ApiImplicitParams(@ApiImplicitParam(name = "inputXML", value = "输入的 XML 参数", example = testCase3))
     @GetMapping(value = "/japx/testC5")
     public String JAXPTestC5(@RequestParam String inputXML) throws Exception {
         DocumentBuilderFactory documentBuilderFactory = initJAXP();
+        documentBuilderFactory.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, false);
         documentBuilderFactory.setFeature("http://apache.org/xml/features/disallow-doctype-decl", true);
         return (outputXML(documentBuilderFactory, inputXML));
     }
