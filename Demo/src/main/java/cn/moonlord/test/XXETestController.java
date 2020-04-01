@@ -143,7 +143,7 @@ public class XXETestController {
         transformer.transform(new DOMSource(document), new StreamResult(stringWriter));
         String result = stringWriter.getBuffer().toString();
         System.out.println("result: " + "\r\n" + result);
-        return result;
+        return "输入用例：" + "\r\n" + inputXML + "\r\n" + "解析结果：" + "\r\n" + result;
     }
 
     @ApiIgnore
