@@ -188,7 +188,7 @@ public class XXETestController {
     @GetMapping(value = "/JAXPTestA1")
     public String JAXPTestA1(@RequestParam String inputXML) throws Exception {
         DocumentBuilderFactory documentBuilderFactory = initJAXP();
-        return (outputXML(documentBuilderFactory, inputXML));
+        return outputXML(documentBuilderFactory, inputXML);
     }
 
     @ApiOperation(value="JAXP (Java API for XML Processing)，测试用例 A2，关闭 XMLConstants.FEATURE_SECURE_PROCESSING 的限制，无效果")
@@ -197,7 +197,7 @@ public class XXETestController {
     public String JAXPTestA2(@RequestParam String inputXML) throws Exception {
         DocumentBuilderFactory documentBuilderFactory = initJAXP();
         documentBuilderFactory.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, false);
-        return (outputXML(documentBuilderFactory, inputXML));
+        return outputXML(documentBuilderFactory, inputXML);
     }
 
     @ApiOperation(value="JAXP (Java API for XML Processing)，测试用例 A3，关闭实体引用扩展 setExpandEntityReferences(false)，不可回显，但是实体仍会被解析，http 请求仍会发送")
@@ -206,7 +206,7 @@ public class XXETestController {
     public String JAXPTestA3(@RequestParam String inputXML) throws Exception {
         DocumentBuilderFactory documentBuilderFactory = initJAXP();
         documentBuilderFactory.setExpandEntityReferences(false);
-        return (outputXML(documentBuilderFactory, inputXML));
+        return outputXML(documentBuilderFactory, inputXML);
     }
 
     @ApiOperation(value="JAXP (Java API for XML Processing)，测试用例 A4，禁用外部实体和 DTD 引用，可防御 XXE 攻击（推荐方法）")
@@ -220,7 +220,7 @@ public class XXETestController {
         documentBuilderFactory.setValidating(false);
         documentBuilderFactory.setXIncludeAware(false);
         documentBuilderFactory.setNamespaceAware(false);
-        return (outputXML(documentBuilderFactory, inputXML));
+        return outputXML(documentBuilderFactory, inputXML);
     }
 
     @ApiOperation(value="JAXP (Java API for XML Processing)，测试用例 A5，禁用 DTD 声明，直接报错，可防御 XXE 攻击")
@@ -229,7 +229,7 @@ public class XXETestController {
     public String JAXPTestA5(@RequestParam String inputXML) throws Exception {
         DocumentBuilderFactory documentBuilderFactory = initJAXP();
         documentBuilderFactory.setFeature("http://apache.org/xml/features/disallow-doctype-decl", true);
-        return (outputXML(documentBuilderFactory, inputXML));
+        return outputXML(documentBuilderFactory, inputXML);
     }
 
     @ApiOperation(value="JAXP (Java API for XML Processing)，测试用例 B1，直接发送 http 请求，http 参数中的实体不会解析")
@@ -237,7 +237,7 @@ public class XXETestController {
     @GetMapping(value = "/JAXPTestB1")
     public String JAXPTestB1(@RequestParam String inputXML) throws Exception {
         DocumentBuilderFactory documentBuilderFactory = initJAXP();
-        return (outputXML(documentBuilderFactory, inputXML));
+        return outputXML(documentBuilderFactory, inputXML);
     }
 
     @ApiOperation(value="JAXP (Java API for XML Processing)，测试用例 B2，引用外部的 DTD 文件，在 DTD 中发送 http 请求，http 参数中的实体不会解析")
@@ -245,7 +245,7 @@ public class XXETestController {
     @GetMapping(value = "/JAXPTestB2")
     public String JAXPTestB2(@RequestParam String inputXML) throws Exception {
         DocumentBuilderFactory documentBuilderFactory = initJAXP();
-        return (outputXML(documentBuilderFactory, inputXML));
+        return outputXML(documentBuilderFactory, inputXML);
     }
 
     @ApiOperation(value="JAXP (Java API for XML Processing)，测试用例 B3，引用外部的 DTD 文件，在 DTD 中嵌套实体， 再发送 http 请求，http 参数中的实体正确解析")
@@ -253,7 +253,7 @@ public class XXETestController {
     @GetMapping(value = "/JAXPTestB3")
     public String JAXPTestB3(@RequestParam String inputXML) throws Exception {
         DocumentBuilderFactory documentBuilderFactory = initJAXP();
-        return (outputXML(documentBuilderFactory, inputXML));
+        return outputXML(documentBuilderFactory, inputXML);
     }
 
     @ApiOperation(value="JAXP (Java API for XML Processing)，测试用例 B4，在测试用例 B3 的基础上，发送多行的文件内容，会因为 URL 格式不正确报错，请求不会发送")
@@ -261,7 +261,7 @@ public class XXETestController {
     @GetMapping(value = "/JAXPTestB4")
     public String JAXPTestB4(@RequestParam String inputXML) throws Exception {
         DocumentBuilderFactory documentBuilderFactory = initJAXP();
-        return (outputXML(documentBuilderFactory, inputXML));
+        return outputXML(documentBuilderFactory, inputXML);
     }
 
     @ApiOperation(value="JAXP (Java API for XML Processing)，测试用例 B5，在测试用例 B3 的基础上，发送单行的 Json 字符串，请求成功发送")
@@ -269,7 +269,7 @@ public class XXETestController {
     @GetMapping(value = "/JAXPTestB5")
     public String JAXPTestB5(@RequestParam String inputXML) throws Exception {
         DocumentBuilderFactory documentBuilderFactory = initJAXP();
-        return (outputXML(documentBuilderFactory, inputXML));
+        return outputXML(documentBuilderFactory, inputXML);
     }
 
     @ApiOperation(value="JAXP (Java API for XML Processing)，测试用例 C1，默认 XMLConstants.FEATURE_SECURE_PROCESSING 限制打开，最多支持 64000 个实体扩展，超出时会直接报错")
@@ -277,7 +277,7 @@ public class XXETestController {
     @GetMapping(value = "/JAXPTestC1")
     public String JAXPTestC1(@RequestParam String inputXML) throws Exception {
         DocumentBuilderFactory documentBuilderFactory = initJAXP();
-        return (outputXML(documentBuilderFactory, inputXML));
+        return outputXML(documentBuilderFactory, inputXML);
     }
 
     @ApiOperation(value="JAXP (Java API for XML Processing)，测试用例 C2，关闭 XMLConstants.FEATURE_SECURE_PROCESSING 的限制，堆内存溢出，导致拒绝服务")
@@ -286,7 +286,7 @@ public class XXETestController {
     public String JAXPTestC2(@RequestParam String inputXML) throws Exception {
         DocumentBuilderFactory documentBuilderFactory = initJAXP();
         documentBuilderFactory.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, false);
-        return (outputXML(documentBuilderFactory, inputXML));
+        return outputXML(documentBuilderFactory, inputXML);
     }
 
     @ApiOperation(value="JAXP (Java API for XML Processing)，测试用例 C3，在测试用例 C2 的基础上，关闭实体引用扩展 setExpandEntityReferences(false)，仍会内存溢出")
@@ -296,7 +296,7 @@ public class XXETestController {
         DocumentBuilderFactory documentBuilderFactory = initJAXP();
         documentBuilderFactory.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, false);
         documentBuilderFactory.setExpandEntityReferences(false);
-        return (outputXML(documentBuilderFactory, inputXML));
+        return outputXML(documentBuilderFactory, inputXML);
     }
 
     @ApiOperation(value="JAXP (Java API for XML Processing)，测试用例 C4，在测试用例 C2 的基础上，禁用外部实体和 DTD 引用，仍会内存溢出")
@@ -311,7 +311,7 @@ public class XXETestController {
         documentBuilderFactory.setValidating(false);
         documentBuilderFactory.setXIncludeAware(false);
         documentBuilderFactory.setNamespaceAware(false);
-        return (outputXML(documentBuilderFactory, inputXML));
+        return outputXML(documentBuilderFactory, inputXML);
     }
 
     @ApiOperation(value="JAXP (Java API for XML Processing)，测试用例 C5，在测试用例 C2 的基础上，禁用 DTD 声明，直接报错，内存不会溢出")
@@ -321,7 +321,7 @@ public class XXETestController {
         DocumentBuilderFactory documentBuilderFactory = initJAXP();
         documentBuilderFactory.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, false);
         documentBuilderFactory.setFeature("http://apache.org/xml/features/disallow-doctype-decl", true);
-        return (outputXML(documentBuilderFactory, inputXML));
+        return outputXML(documentBuilderFactory, inputXML);
     }
 
 }
