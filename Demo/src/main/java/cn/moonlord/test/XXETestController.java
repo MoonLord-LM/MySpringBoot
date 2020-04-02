@@ -114,7 +114,7 @@ public class XXETestController {
                     "<i>&i;</i>" + "\r\n" +
             "</recursion>";
 
-    private static DocumentBuilderFactory initJAXP() throws Exception {
+    private static DocumentBuilderFactory initJAXP() {
         System.setProperty(
                 "javax.xml.parsers.DocumentBuilderFactory",
                 "com.sun.org.apache.xerces.internal.jaxp.DocumentBuilderFactoryImpl"
