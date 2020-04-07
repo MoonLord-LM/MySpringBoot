@@ -25,7 +25,7 @@ public class ComandInjectionTestController {
     private static final String testCaseC1 = "ipconfig";
     private static final String testCaseC2 = "ipconfig -all";
 
-    @ApiOperation(value="测试用例 A，控制所有参数来执行命令")
+    @ApiOperation(value="测试用例 A1，控制所有参数来执行命令")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "inputCommand1", value = "命令参数1", example = testCaseA1),
             @ApiImplicitParam(name = "inputCommand2", value = "命令参数2", example = testCaseA2),
@@ -33,8 +33,8 @@ public class ComandInjectionTestController {
             @ApiImplicitParam(name = "inputCommand4", value = "命令参数4", example = testCaseA4),
             @ApiImplicitParam(name = "inputCommand5", value = "命令参数5", example = testCaseA5)
     })
-    @GetMapping(value = "/WindowsTestA")
-    public String WindowsTestA(
+    @GetMapping(value = "/WindowsTestA1")
+    public String WindowsTestA1(
             @RequestParam String inputCommand1,
             @RequestParam String inputCommand2,
             @RequestParam String inputCommand3,
@@ -60,7 +60,7 @@ public class ComandInjectionTestController {
         return sb.toString();
     }
 
-    @ApiOperation(value="测试用例 B，控制 Shell 解析器的参数来执行命令")
+    @ApiOperation(value="测试用例 B1，控制 Shell 解析器的参数来执行命令")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "inputCommand1", value = "命令参数1", example = testCaseB1),
             @ApiImplicitParam(name = "inputCommand2", value = "命令参数2", example = testCaseB2),
@@ -68,15 +68,15 @@ public class ComandInjectionTestController {
             @ApiImplicitParam(name = "inputCommand4", value = "命令参数4", example = testCaseB4),
             @ApiImplicitParam(name = "inputCommand5", value = "命令参数5", example = testCaseB5)
     })
-    @GetMapping(value = "/WindowsTestB")
-    public String WindowsTestB(
+    @GetMapping(value = "/WindowsTestB1")
+    public String WindowsTestB1(
             @RequestParam String inputCommand1,
             @RequestParam String inputCommand2,
             @RequestParam String inputCommand3,
             @RequestParam String inputCommand4,
             @RequestParam String inputCommand5
     ) throws Exception {
-        return WindowsTestA(inputCommand1, inputCommand2, inputCommand3, inputCommand4, inputCommand5);
+        return WindowsTestA1(inputCommand1, inputCommand2, inputCommand3, inputCommand4, inputCommand5);
     }
 
     @ApiOperation(value="测试用例 C1，只能控制第一个参数时，只能执行不带参数的命令")
@@ -85,7 +85,7 @@ public class ComandInjectionTestController {
     })
     @GetMapping(value = "/WindowsTestC1")
     public String WindowsTestC1(@RequestParam String inputCommand1) throws Exception {
-        return WindowsTestA(inputCommand1, "", "", "", "");
+        return WindowsTestA1(inputCommand1, "", "", "", "");
     }
 
     @ApiOperation(value="测试用例 C2，只能控制第一个参数时，无法执行带参数的命令，会提示找不到指定的文件")
@@ -94,7 +94,7 @@ public class ComandInjectionTestController {
     })
     @GetMapping(value = "/WindowsTestC2")
     public String WindowsTestC2(@RequestParam String inputCommand1) throws Exception {
-        return WindowsTestA(inputCommand1, "", "", "", "");
+        return WindowsTestA1(inputCommand1, "", "", "", "");
     }
 
 }
