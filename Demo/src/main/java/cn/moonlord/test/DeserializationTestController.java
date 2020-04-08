@@ -30,12 +30,13 @@ public class DeserializationTestController {
 
     private static class HideAttackObject extends SimpleObject implements Serializable {
         public Map map;
-        public HideAttackObject(String name) {
+        public HideAttackObject(String name, Map map) {
             super(name);
+            this.map = map;
         }
         private void readObject(ObjectInputStream in) throws Exception {
             in.defaultReadObject();
-            if(map != null){
+            if(map != null && map.size() > 0){
                 Map.Entry e = (Map.Entry)map.entrySet().iterator().next();
                 e.setValue(name);
             }
@@ -112,8 +113,7 @@ public class DeserializationTestController {
         Map<String,String> beforeTransformerMap = new HashMap<String,String>();
         beforeTransformerMap.put("testKey", "testValue");
         Map afterTransformerMap = TransformedMap.decorate(beforeTransformerMap, null, transformedChain);
-        HideAttackObject obj = new HideAttackObject(name);
-        obj.map = afterTransformerMap;
+        HideAttackObject obj = new HideAttackObject(name, afterTransformerMap);
         String fileName = "C1.ser";
         ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(fileName));
         out.writeObject(obj);
