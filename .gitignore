@@ -28,5 +28,6 @@ mvnw.cmd
 
 ### Temp File ###
 */target/
-logs
+*/logs/
 *.log
+*.ser
