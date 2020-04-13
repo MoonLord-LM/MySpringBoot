@@ -206,7 +206,7 @@ public class XXETestController {
         return outputXML(documentBuilderFactory, inputXML);
     }
 
-    @ApiOperation(value="JAXP (Java API for XML Processing)，测试用例 A4，禁用外部实体和 DTD 引用，可防御 XXE 攻击（推荐方法）")
+    @ApiOperation(value="JAXP (Java API for XML Processing)，测试用例 A4，禁用外部实体和 DTD 引用，可以防御 XXE 攻击（推荐方法）")
     @ApiImplicitParams(@ApiImplicitParam(name = "inputXML", value = "输入的 XML 参数", example = testCaseA))
     @GetMapping(value = "/JAXPTestA4")
     public String JAXPTestA4(@RequestParam String inputXML) throws Exception {
@@ -220,7 +220,7 @@ public class XXETestController {
         return outputXML(documentBuilderFactory, inputXML);
     }
 
-    @ApiOperation(value="JAXP (Java API for XML Processing)，测试用例 A5，禁用 DTD 声明，直接报错，可防御 XXE 攻击")
+    @ApiOperation(value="JAXP (Java API for XML Processing)，测试用例 A5，禁用 DTD 声明，直接报错，可以防御 XXE 攻击")
     @ApiImplicitParams(@ApiImplicitParam(name = "inputXML", value = "输入的 XML 参数", example = testCaseA))
     @GetMapping(value = "/JAXPTestA5")
     public String JAXPTestA5(@RequestParam String inputXML) throws Exception {

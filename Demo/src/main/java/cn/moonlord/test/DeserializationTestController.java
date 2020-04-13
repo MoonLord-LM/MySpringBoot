@@ -28,9 +28,9 @@ public class DeserializationTestController {
         }
     }
 
-    private static class HideAttackObject extends SimpleObject implements Serializable {
+    private static class MapObject extends SimpleObject implements Serializable {
         public Map map;
-        public HideAttackObject(String name, Map map) {
+        public MapObject(String name, Map map) {
             super(name);
             this.map = map;
         }
@@ -41,6 +41,31 @@ public class DeserializationTestController {
                 e.setValue(name);
             }
         }
+    }
+
+    public class SafeObjectInputStream extends ObjectInputStream{
+
+        private Class<?>[] safeClass;
+
+        public SafeObjectInputStream(InputStream inputStream, Class<?> safeClass[]) throws IOException {
+            super(inputStream);
+            this.safeClass = safeClass;
+        }
+
+        @Override
+        protected Class<?> resolveClass(ObjectStreamClass desc) throws IOException, ClassNotFoundException {
+            Boolean trusted = false;
+            for (int i = 0; i < safeClass.length; i++) {
+                if (desc.getName().equals(safeClass[i].getName())) {
+                    trusted = true;
+                }
+            }
+            if(!trusted){
+                throw new InvalidClassException("Unsafe deserialization attempt has been denied", desc.getName());
+            }
+            return super.resolveClass(desc);
+        }
+
     }
 
     private static final String testCaseA1 = "Hello World";
@@ -93,6 +118,17 @@ public class DeserializationTestController {
         return "Serialized Object has been read : " + obj;
     }
 
+    @ApiOperation(value="测试用例 B3，继承并重写 ObjectInputStream 的 resolveClass 方法，限制允许反序列化的类，可以防御攻击")
+    @GetMapping(value = "/TestB3")
+    public String TestB3() throws Exception {
+        String fileName = "B1.ser";
+        SafeObjectInputStream in = new SafeObjectInputStream(new FileInputStream(fileName), new Class[]{ SimpleObject.class });
+        SimpleObject obj = (SimpleObject) in.readObject();
+        in.close();
+        System.out.println("Serialized Object has been read : " + obj);
+        return "Serialized Object has been read : " + obj;
+    }
+
     @ApiOperation(value="测试用例 C1，使用 commons-collections 3.1 的 InvokerTransformer，序列化攻击对象，并保存到 C1.ser 文件中")
     @ApiImplicitParams({@ApiImplicitParam(name = "name", value = "对象参数1", example = testCaseA1)})
     @GetMapping(value = "/TestC1")
@@ -113,7 +149,7 @@ public class DeserializationTestController {
         Map<String,String> beforeTransformerMap = new HashMap<String,String>();
         beforeTransformerMap.put("testKey", "testValue");
         Map afterTransformerMap = TransformedMap.decorate(beforeTransformerMap, null, transformedChain);
-        HideAttackObject obj = new HideAttackObject(name, afterTransformerMap);
+        MapObject obj = new MapObject(name, afterTransformerMap);
         String fileName = "C1.ser";
         ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(fileName));
         out.writeObject(obj);
@@ -127,7 +163,21 @@ public class DeserializationTestController {
     public String TestC2() throws Exception {
         String fileName = "C1.ser";
         ObjectInputStream in = new ObjectInputStream(new FileInputStream(fileName));
-        SimpleObject obj = (SimpleObject) in.readObject();
+        MapObject obj = (MapObject) in.readObject();
+        in.close();
+        System.out.println("Serialized Object has been read : " + obj);
+        return "Serialized Object has been read : " + obj;
+    }
+
+    @ApiOperation(value="测试用例 C3，继承并重写 ObjectInputStream 的 resolveClass 方法，限制允许反序列化的类，可以防御攻击")
+    @GetMapping(value = "/TestC3")
+    public String TestC3() throws Exception {
+        String fileName = "C1.ser";
+        SafeObjectInputStream in = new SafeObjectInputStream(
+                new FileInputStream(fileName),
+                new Class[]{ SimpleObject.class, MapObject.class }
+        );
+        MapObject obj = (MapObject) in.readObject();
         in.close();
         System.out.println("Serialized Object has been read : " + obj);
         return "Serialized Object has been read : " + obj;
