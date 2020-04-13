@@ -70,7 +70,7 @@ public class DeserializationTestController {
 
     private static final String testCaseA1 = "Hello World";
 
-    @ApiOperation(value="测试用例 A1，序列化一个对象，并保存到 A1.ser 文件中")
+    @ApiOperation(value="测试用例 A1，序列化一个正常对象，并保存到 A1.ser 文件中")
     @ApiImplicitParams({@ApiImplicitParam(name = "name", value = "对象参数1", example = testCaseA1)})
     @GetMapping(value = "/TestA1")
     public String TestA1(@RequestParam String name) throws Exception {
@@ -83,9 +83,22 @@ public class DeserializationTestController {
         return "Serialized data is saved in " + fileName;
     }
 
-    @ApiOperation(value="测试用例 A2，从文件 A1.ser 中，反序列化对象")
+    @ApiOperation(value="测试用例 A2，序列化一个实现了 readObject 的攻击对象，并保存到 A1.ser 文件中")
+    @ApiImplicitParams({@ApiImplicitParam(name = "name", value = "对象参数1", example = testCaseA1)})
     @GetMapping(value = "/TestA2")
-    public String TestA2() throws Exception {
+    public String TestA2(@RequestParam String name) throws Exception {
+        AttackObject obj = new AttackObject(name);
+        String fileName = "A1.ser";
+        ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(fileName));
+        out.writeObject(obj);
+        out.close();
+        System.out.println("Serialized data is saved in " + fileName);
+        return "Serialized data is saved in " + fileName;
+    }
+
+    @ApiOperation(value="测试用例 A3，从文件 A1.ser 中，反序列化对象（可以执行攻击代码）")
+    @GetMapping(value = "/TestA3")
+    public String TestA3() throws Exception {
         String fileName = "A1.ser";
         ObjectInputStream in = new ObjectInputStream(new FileInputStream(fileName));
         SimpleObject obj = (SimpleObject) in.readObject();
@@ -94,11 +107,24 @@ public class DeserializationTestController {
         return "Serialized Object has been read : " + obj;
     }
 
-    @ApiOperation(value="测试用例 B1，序列化一个实现了 readObject 的攻击对象，并保存到 B1.ser 文件中")
+    @ApiOperation(value="测试用例 A4，继承并重写 ObjectInputStream 的 resolveClass 方法，限制允许反序列化的类，可以防御攻击")
+    @GetMapping(value = "/TestA4")
+    public String TestA4() throws Exception {
+        String fileName = "A1.ser";
+        SafeObjectInputStream in = new SafeObjectInputStream(new FileInputStream(fileName), new Class[]{ SimpleObject.class });
+        SimpleObject obj = (SimpleObject) in.readObject();
+        in.close();
+        System.out.println("Serialized Object has been read : " + obj);
+        return "Serialized Object has been read : " + obj;
+    }
+
+    @ApiOperation(value="测试用例 B1，序列化一个含有 Map 的正常对象，并保存到 B1.ser 文件中")
     @ApiImplicitParams({@ApiImplicitParam(name = "name", value = "对象参数1", example = testCaseA1)})
     @GetMapping(value = "/TestB1")
     public String TestB1(@RequestParam String name) throws Exception {
-        AttackObject obj = new AttackObject(name);
+        HashMap hashMap = new HashMap<String, String>();
+        hashMap.put("testKey", "testValue");
+        MapObject obj = new MapObject(name, hashMap);
         String fileName = "B1.ser";
         ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(fileName));
         out.writeObject(obj);
@@ -107,32 +133,10 @@ public class DeserializationTestController {
         return "Serialized data is saved in " + fileName;
     }
 
-    @ApiOperation(value="测试用例 B2，从文件 B1.ser 中，反序列化对象，可以执行攻击代码")
-    @GetMapping(value = "/TestB2")
-    public String TestB2() throws Exception {
-        String fileName = "B1.ser";
-        ObjectInputStream in = new ObjectInputStream(new FileInputStream(fileName));
-        SimpleObject obj = (SimpleObject) in.readObject();
-        in.close();
-        System.out.println("Serialized Object has been read : " + obj);
-        return "Serialized Object has been read : " + obj;
-    }
-
-    @ApiOperation(value="测试用例 B3，继承并重写 ObjectInputStream 的 resolveClass 方法，限制允许反序列化的类，可以防御攻击")
-    @GetMapping(value = "/TestB3")
-    public String TestB3() throws Exception {
-        String fileName = "B1.ser";
-        SafeObjectInputStream in = new SafeObjectInputStream(new FileInputStream(fileName), new Class[]{ SimpleObject.class });
-        SimpleObject obj = (SimpleObject) in.readObject();
-        in.close();
-        System.out.println("Serialized Object has been read : " + obj);
-        return "Serialized Object has been read : " + obj;
-    }
-
-    @ApiOperation(value="测试用例 C1，使用 commons-collections 3.1 的 InvokerTransformer，序列化攻击对象，并保存到 C1.ser 文件中")
+    @ApiOperation(value="测试用例 B2，使用 commons-collections 3.1 的 InvokerTransformer，序列化攻击对象，并保存到 B1.ser 文件中")
     @ApiImplicitParams({@ApiImplicitParam(name = "name", value = "对象参数1", example = testCaseA1)})
-    @GetMapping(value = "/TestC1")
-    public String TestC1(@RequestParam String name) throws Exception {
+    @GetMapping(value = "/TestB2")
+    public String TestB2(@RequestParam String name) throws Exception {
         Transformer[] transformers = new Transformer[] {
                 new ConstantTransformer(Runtime.class),
                 new InvokerTransformer("getMethod",
@@ -150,7 +154,7 @@ public class DeserializationTestController {
         beforeTransformerMap.put("testKey", "testValue");
         Map afterTransformerMap = TransformedMap.decorate(beforeTransformerMap, null, transformedChain);
         MapObject obj = new MapObject(name, afterTransformerMap);
-        String fileName = "C1.ser";
+        String fileName = "B1.ser";
         ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(fileName));
         out.writeObject(obj);
         out.close();
@@ -158,10 +162,10 @@ public class DeserializationTestController {
         return "Serialized data is saved in " + fileName;
     }
 
-    @ApiOperation(value="测试用例 C2，从文件 C1.ser 中，反序列化对象，可以执行攻击代码")
-    @GetMapping(value = "/TestC2")
-    public String TestC2() throws Exception {
-        String fileName = "C1.ser";
+    @ApiOperation(value="测试用例 B3，从文件 B1.ser 中，反序列化对象(可以执行攻击代码)")
+    @GetMapping(value = "/TestB3")
+    public String TestB3() throws Exception {
+        String fileName = "B1.ser";
         ObjectInputStream in = new ObjectInputStream(new FileInputStream(fileName));
         MapObject obj = (MapObject) in.readObject();
         in.close();
@@ -169,13 +173,13 @@ public class DeserializationTestController {
         return "Serialized Object has been read : " + obj;
     }
 
-    @ApiOperation(value="测试用例 C3，继承并重写 ObjectInputStream 的 resolveClass 方法，限制允许反序列化的类，可以防御攻击")
-    @GetMapping(value = "/TestC3")
-    public String TestC3() throws Exception {
-        String fileName = "C1.ser";
+    @ApiOperation(value="测试用例 B4，继承并重写 ObjectInputStream 的 resolveClass 方法，限制允许反序列化的类，可以防御攻击")
+    @GetMapping(value = "/TestB4")
+    public String TestB4() throws Exception {
+        String fileName = "B1.ser";
         SafeObjectInputStream in = new SafeObjectInputStream(
                 new FileInputStream(fileName),
-                new Class[]{ SimpleObject.class, MapObject.class }
+                new Class[]{ SimpleObject.class, MapObject.class, HashMap.class }
         );
         MapObject obj = (MapObject) in.readObject();
         in.close();
