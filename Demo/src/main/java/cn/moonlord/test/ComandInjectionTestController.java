@@ -5,7 +5,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.io.*;
 
-@Api(tags = "命令注入 测试")
+@Api(tags = "命令注入测试")
 @RestController
 @RequestMapping("/ComandInjection")
 public class ComandInjectionTestController {

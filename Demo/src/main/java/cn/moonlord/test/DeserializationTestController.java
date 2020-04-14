@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import java.io.*;
 import java.util.*;
 
-@Api(tags = "反序列化 测试")
+@Api(tags = "反序列化测试")
 @RestController
 @RequestMapping("/Deserialization")
 public class DeserializationTestController {
