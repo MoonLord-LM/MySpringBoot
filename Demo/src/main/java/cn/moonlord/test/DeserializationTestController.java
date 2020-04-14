@@ -83,7 +83,7 @@ public class DeserializationTestController {
         return "Serialized data is saved in " + fileName;
     }
 
-    @ApiOperation(value="测试用例 A2，序列化一个实现了 readObject 的攻击对象，并保存到 A1.ser 文件中")
+    @ApiOperation(value="测试用例 A2，序列化一个实现了 readObject 的对象，并保存到 A1.ser 文件中")
     @ApiImplicitParams({@ApiImplicitParam(name = "name", value = "对象参数1", example = testCaseA1)})
     @GetMapping(value = "/TestA2")
     public String TestA2(@RequestParam String name) throws Exception {
@@ -96,7 +96,7 @@ public class DeserializationTestController {
         return "Serialized data is saved in " + fileName;
     }
 
-    @ApiOperation(value="测试用例 A3，从文件 A1.ser 中，反序列化对象（可以执行攻击代码）")
+    @ApiOperation(value="测试用例 A3，从文件 A1.ser 中，反序列化对象（可以执行 readObject 中的代码）")
     @GetMapping(value = "/TestA3")
     public String TestA3() throws Exception {
         String fileName = "A1.ser";
@@ -162,7 +162,7 @@ public class DeserializationTestController {
         return "Serialized data is saved in " + fileName;
     }
 
-    @ApiOperation(value="测试用例 B3，从文件 B1.ser 中，反序列化对象(可以执行攻击代码)")
+    @ApiOperation(value="测试用例 B3，从文件 B1.ser 中，反序列化对象(可以利用 Map 的 setValue 方法，执行 InvokerTransformer 构造的攻击代码)")
     @GetMapping(value = "/TestB3")
     public String TestB3() throws Exception {
         String fileName = "B1.ser";
