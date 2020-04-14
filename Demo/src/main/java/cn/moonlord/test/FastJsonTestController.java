@@ -32,7 +32,7 @@ public class FastJsonTestController {
     private static final String testCaseA1 = "Hello World";
     private static final String testCaseA2 = "{\"@type\":\"cn.moonlord.test.FastJsonTestController$SimpleObject\",\"name\":\"Hello World\"}";
 
-    @ApiOperation(value="测试用例 A1，使用 SerializerFeature.WriteClassName，将对象转换为 Json 字符串")
+    @ApiOperation(value="测试用例 A1，使用 SerializerFeature.WriteClassName 特性，将对象转换为 Json 字符串")
     @ApiImplicitParams({@ApiImplicitParam(name = "name", value = "name", example = testCaseA1)})
     @GetMapping(value = "/TestA1")
     public String TestA1(@RequestParam String name) {
@@ -43,13 +43,36 @@ public class FastJsonTestController {
         return jsonString;
     }
 
-    @ApiOperation(value="测试用例 A2，使用 setAutoTypeSupport，将包含  @type 的 Json 字符串解析为对象")
+    @ApiOperation(value="测试用例 A2，使用 ParserConfig.global.setAutoTypeSupport，将包含 @type 的 Json 字符串解析为对象，对象的构造方法和 getter / setter 方法都会被执行")
     @ApiImplicitParams({@ApiImplicitParam(name = "JsonString", value = "Json 字符串", example = testCaseA2)})
     @GetMapping(value = "/TestA2")
     public String TestA2(@RequestParam String JsonString) {
-        //ParserConfig.global.setAutoTypeSupport(true); // 自动类型，允许全部
-        ParserConfig.global.addAccept("cn.moonlord.test."); // 自动类型，允许部分
-        //Object simpleObject = JSON.parseObject(JsonString, SimpleObject.class); // 指定类型，不受限制
+        ParserConfig.global.setAutoTypeSupport(true);
+        Object simpleObject = JSON.parseObject(JsonString);
+        System.out.println("simpleObject : " + simpleObject.getClass().getName());
+        return JSON.toJSONString(simpleObject, SerializerFeature.PrettyFormat);
+    }
+
+    @ApiOperation(value="测试用例 A3，使用 ParserConfig.global.addAccept，限制 @type 的 Json 对象的类型的允许范围")
+    @ApiImplicitParams({@ApiImplicitParam(name = "JsonString", value = "Json 字符串", example = testCaseA2)})
+    @GetMapping(value = "/TestA3")
+    public String TestA3(@RequestParam String JsonString) {
+        ParserConfig.global.clearDeserializers();
+        ParserConfig.global = new ParserConfig();
+        ParserConfig.global.addAccept("cn.moonlord.");
+        Object simpleObject = JSON.parseObject(JsonString);
+        System.out.println("simpleObject : " + simpleObject.getClass().getName());
+        return JSON.toJSONString(simpleObject, SerializerFeature.PrettyFormat);
+    }
+
+    @ApiOperation(value="测试用例 A4，使用 ParserConfig.global.addDeny，限制 @type 的 Json 对象的类型的禁止范围")
+    @ApiImplicitParams({@ApiImplicitParam(name = "JsonString", value = "Json 字符串", example = testCaseA2)})
+    @GetMapping(value = "/TestA4")
+    public String TestA4(@RequestParam String JsonString) {
+        ParserConfig.global.clearDeserializers();
+        ParserConfig.global = new ParserConfig();
+        ParserConfig.global.addAccept("cn.moonlord.safe.");
+        ParserConfig.global.addDeny("cn.moonlord.test.");
         Object simpleObject = JSON.parseObject(JsonString);
         System.out.println("simpleObject : " + simpleObject.getClass().getName());
         return JSON.toJSONString(simpleObject, SerializerFeature.PrettyFormat);
