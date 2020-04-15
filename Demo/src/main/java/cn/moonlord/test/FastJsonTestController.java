@@ -3,6 +3,7 @@ package cn.moonlord.test;
 import com.alibaba.fastjson.*;
 import com.alibaba.fastjson.parser.ParserConfig;
 import com.alibaba.fastjson.serializer.SerializerFeature;
+import com.alibaba.fastjson.util.TypeUtils;
 import io.swagger.annotations.*;
 import org.springframework.web.bind.annotation.*;
 
@@ -16,7 +17,7 @@ public class FastJsonTestController {
 
     public static class SimpleObject implements Serializable {
         private String name;
-        SimpleObject(){
+        public SimpleObject(){
             System.out.println("构造方法被调用！");
         }
         public String getName() {
@@ -31,6 +32,11 @@ public class FastJsonTestController {
 
     private static final String testCaseA1 = "Hello World";
     private static final String testCaseA2 = "{\"@type\":\"cn.moonlord.test.FastJsonTestController$SimpleObject\",\"name\":\"Hello World\"}";
+    private static final String testCaseA3 =
+            "{" +
+                    "\"a\":{\"@type\":\"java.lang.Class\",\"val\":\"cn.moonlord.test.FastJsonTestController$SimpleObject\"}," +
+                    "\"b\":{\"@type\":\"cn.moonlord.test.FastJsonTestController$SimpleObject\",\"name\":\"Hello World\"}" +
+            "}";
 
     @ApiOperation(value="测试用例 A1，使用 SerializerFeature.WriteClassName 特性，将对象转换为 Json 字符串")
     @ApiImplicitParams({@ApiImplicitParam(name = "name", value = "name", example = testCaseA1)})
@@ -47,7 +53,9 @@ public class FastJsonTestController {
     @ApiImplicitParams({@ApiImplicitParam(name = "JsonString", value = "Json 字符串", example = testCaseA2)})
     @GetMapping(value = "/TestA2")
     public String TestA2(@RequestParam String JsonString) {
+        ParserConfig.global = new ParserConfig();
         ParserConfig.global.setAutoTypeSupport(true);
+        TypeUtils.clearClassMapping();
         Object simpleObject = JSON.parseObject(JsonString);
         System.out.println("simpleObject : " + simpleObject.getClass().getName());
         return JSON.toJSONString(simpleObject, SerializerFeature.PrettyFormat);
@@ -57,9 +65,9 @@ public class FastJsonTestController {
     @ApiImplicitParams({@ApiImplicitParam(name = "JsonString", value = "Json 字符串", example = testCaseA2)})
     @GetMapping(value = "/TestA3")
     public String TestA3(@RequestParam String JsonString) {
-        ParserConfig.global.clearDeserializers();
         ParserConfig.global = new ParserConfig();
         ParserConfig.global.addAccept("cn.moonlord.");
+        TypeUtils.clearClassMapping();
         Object simpleObject = JSON.parseObject(JsonString);
         System.out.println("simpleObject : " + simpleObject.getClass().getName());
         return JSON.toJSONString(simpleObject, SerializerFeature.PrettyFormat);
@@ -69,10 +77,21 @@ public class FastJsonTestController {
     @ApiImplicitParams({@ApiImplicitParam(name = "JsonString", value = "Json 字符串", example = testCaseA2)})
     @GetMapping(value = "/TestA4")
     public String TestA4(@RequestParam String JsonString) {
-        ParserConfig.global.clearDeserializers();
         ParserConfig.global = new ParserConfig();
-        ParserConfig.global.addAccept("cn.moonlord.safe.");
+        ParserConfig.global.addAccept("cn.moonlord.safe");
         ParserConfig.global.addDeny("cn.moonlord.test.");
+        TypeUtils.clearClassMapping();
+        Object simpleObject = JSON.parseObject(JsonString);
+        System.out.println("simpleObject : " + simpleObject.getClass().getName());
+        return JSON.toJSONString(simpleObject, SerializerFeature.PrettyFormat);
+    }
+
+    @ApiOperation(value="测试用例 A5，使用 java.lang.Class 加载类，新版本已经不能用于绕过类型的黑名单限制")
+    @ApiImplicitParams({@ApiImplicitParam(name = "JsonString", value = "Json 字符串", example = testCaseA3)})
+    @GetMapping(value = "/TestA5")
+    public String TestA5(@RequestParam String JsonString) {
+        ParserConfig.global = new ParserConfig();
+        TypeUtils.clearClassMapping();
         Object simpleObject = JSON.parseObject(JsonString);
         System.out.println("simpleObject : " + simpleObject.getClass().getName());
         return JSON.toJSONString(simpleObject, SerializerFeature.PrettyFormat);
