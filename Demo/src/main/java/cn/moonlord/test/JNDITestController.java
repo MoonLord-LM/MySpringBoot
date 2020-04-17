@@ -1,19 +1,12 @@
 package cn.moonlord.test;
 
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiImplicitParam;
-import io.swagger.annotations.ApiImplicitParams;
-import io.swagger.annotations.ApiOperation;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import io.swagger.annotations.*;
+import org.slf4j.*;
+import org.springframework.web.bind.annotation.*;
 
-import java.rmi.Naming;
-import java.rmi.Remote;
-import java.rmi.RemoteException;
-import java.rmi.registry.LocateRegistry;
-import java.rmi.registry.Registry;
+import java.io.Serializable;
+import java.rmi.*;
+import java.rmi.registry.*;
 import java.rmi.server.UnicastRemoteObject;
 
 @Api(tags = "JNDI 测试")
@@ -21,35 +14,57 @@ import java.rmi.server.UnicastRemoteObject;
 @RequestMapping("/JNDI")
 public class JNDITestController {
 
+    private static final Logger logger = LoggerFactory.getLogger(JNDITestController.class);
+
     public interface Task extends Remote {
-        public Object execute(String input) throws RemoteException;
+        public Object execute(Message message) throws RemoteException;
     }
 
-    public class TaskEngine implements Task {
+    public static class Message implements Serializable {
+        private String message;
+        public Message(String message) {
+            this.message = message;
+        }
+    }
+
+    public static class TaskEngine extends UnicastRemoteObject implements Task, Serializable {
+        public TaskEngine() throws RemoteException { }
         @Override
-        public Object execute(String input) throws RemoteException {
-            System.out.println("input : " + input);
-            return input;
+        public Object execute(Message message) throws RemoteException {
+            logger.info("TaskEngine.execute : " + message + " " + message.message);
+            return message.message;
         }
     }
 
     @ApiOperation(value="测试用例 A1，启动 RMI 服务端")
     @GetMapping(value = "/TestA1")
-    @ApiImplicitParams({@ApiImplicitParam(name = "listenPort", value = "listenPort", example = "9000")})
-    public String TestA1(@RequestParam Integer listenPort) throws Exception {
+    @ApiImplicitParams({@ApiImplicitParam(name = "registryPort", value = "listenPort", example = "9000")})
+    public String TestA1(@RequestParam Integer registryPort) throws Exception {
         TaskEngine taskEngine = new TaskEngine();
-        Registry registry = LocateRegistry.createRegistry(listenPort);
-        registry.rebind("task", taskEngine);
+        logger.info("Server taskEngine : " + taskEngine);
+        Registry registry = LocateRegistry.createRegistry(registryPort);
+        logger.info("Server registry : " + registry);
+        registry.bind("task", taskEngine);
+        for(String name : registry.list()){
+            logger.info("Server registry name : " + name);
+        }
         return taskEngine.toString();
     }
 
     @ApiOperation(value="测试用例 A2，启动 RMI 客户端")
     @GetMapping(value = "/TestA2")
-    @ApiImplicitParams({@ApiImplicitParam(name = "serverPort", value = "serverPort", example = "9000")})
-    public String TestA2(@RequestParam Integer serverPort) throws Exception {
-        Registry registry = LocateRegistry.getRegistry("127.0.0.1", serverPort);
+    @ApiImplicitParams({@ApiImplicitParam(name = "registryPort", value = "serverPort", example = "9000")})
+    public String TestA2(@RequestParam Integer registryPort) throws Exception {
+        Registry registry = LocateRegistry.getRegistry("127.0.0.1", registryPort);
+        logger.info("Client registry : " + registry);
+        for(String name : registry.list()){
+            logger.info("Client registry name : " + name);
+        }
         Task task = (Task) registry.lookup("task");
-        return task.execute("HelloWorld").toString();
+        logger.info("Client task : " + task);
+        Message message = new Message("Hello World");
+        logger.info("Client message : " + message + " " + message.message);
+        return task.execute(message).toString();
     }
 
 }
