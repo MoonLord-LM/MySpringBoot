@@ -27,11 +27,24 @@ public class JNDITestController {
         }
     }
 
-    public static class TaskEngine extends UnicastRemoteObject implements Task, Serializable {
-        public TaskEngine() throws RemoteException { }
+    public static class RemoteTask /* extends UnicastRemoteObject*/ implements Task, Serializable {
+        public RemoteTask() throws RemoteException {
+            logger.info(String.valueOf(this));
+        }
         @Override
         public Object execute(Message message) throws RemoteException {
-            logger.info("TaskEngine.execute : " + message + " " + message.message);
+            logger.info("RemoteTask.execute : " + message + " " + message.message);
+            return message.message;
+        }
+    }
+
+    public static class LocalTask /* extends UnicastRemoteObject*/ implements Task, Serializable {
+        public LocalTask() throws RemoteException {
+            logger.info(String.valueOf(this));
+        }
+        @Override
+        public Object execute(Message message) throws RemoteException {
+            logger.info("LocalTask.execute : " + message + " " + message.message);
             return message.message;
         }
     }
@@ -40,30 +53,82 @@ public class JNDITestController {
     @GetMapping(value = "/TestA1")
     @ApiImplicitParams({@ApiImplicitParam(name = "registryPort", value = "listenPort", example = "9000")})
     public String TestA1(@RequestParam Integer registryPort) throws Exception {
-        TaskEngine taskEngine = new TaskEngine();
-        logger.info("Server taskEngine : " + taskEngine);
+        RemoteTask remoteTask = new RemoteTask();
+        UnicastRemoteObject.exportObject(remoteTask, registryPort);
+        LocalTask localTask = new LocalTask();
         Registry registry = LocateRegistry.createRegistry(registryPort);
-        logger.info("Server registry : " + registry);
-        registry.bind("task", taskEngine);
+        logger.info("registry : " + registry);
+        registry.bind("remoteTask", remoteTask);
+        registry.bind("localTask", localTask);
+        Naming.bind("rmi://127.0.0.1:" + registryPort + "/naming/remoteTask", remoteTask);
+        Naming.bind("rmi://127.0.0.1:" + registryPort + "/naming/localTask", localTask);
         for(String name : registry.list()){
-            logger.info("Server registry name : " + name);
+            logger.info("registry name : " + name);
         }
-        return taskEngine.toString();
+        return registry.toString();
     }
 
-    @ApiOperation(value="测试用例 A2，启动 RMI 客户端")
+    @ApiOperation(value="测试用例 A2，启动 RMI 客户端，registry.lookup 调用远程方法，在服务器上执行")
     @GetMapping(value = "/TestA2")
     @ApiImplicitParams({@ApiImplicitParam(name = "registryPort", value = "serverPort", example = "9000")})
     public String TestA2(@RequestParam Integer registryPort) throws Exception {
         Registry registry = LocateRegistry.getRegistry("127.0.0.1", registryPort);
-        logger.info("Client registry : " + registry);
+        logger.info("registry : " + registry);
         for(String name : registry.list()){
-            logger.info("Client registry name : " + name);
+            logger.info("registry name : " + name);
         }
-        Task task = (Task) registry.lookup("task");
-        logger.info("Client task : " + task);
+        Task task = (Task) registry.lookup("remoteTask");
+        logger.info("task : " + task);
         Message message = new Message("Hello World");
-        logger.info("Client message : " + message + " " + message.message);
+        logger.info("message : " + message + " " + message.message);
+        return task.execute(message).toString();
+    }
+
+    @ApiOperation(value="测试用例 A3，启动 RMI 客户端，registry.lookup 调用远程方法，在本地执行")
+    @GetMapping(value = "/TestA3")
+    @ApiImplicitParams({@ApiImplicitParam(name = "registryPort", value = "serverPort", example = "9000")})
+    public String TestA3(@RequestParam Integer registryPort) throws Exception {
+        Registry registry = LocateRegistry.getRegistry("127.0.0.1", registryPort);
+        logger.info("registry : " + registry);
+        for(String name : registry.list()){
+            logger.info("registry name : " + name);
+        }
+        Task task = (Task) registry.lookup("localTask");
+        logger.info("task : " + task);
+        Message message = new Message("Hello World");
+        logger.info("message : " + message + " " + message.message);
+        return task.execute(message).toString();
+    }
+
+    @ApiOperation(value="测试用例 A4，启动 RMI 客户端，Naming.lookup 调用远程方法，在服务器上执行")
+    @GetMapping(value = "/TestA4")
+    @ApiImplicitParams({@ApiImplicitParam(name = "registryPort", value = "serverPort", example = "9000")})
+    public String TestA4(@RequestParam Integer registryPort) throws Exception {
+        Registry registry = LocateRegistry.getRegistry("127.0.0.1", registryPort);
+        logger.info("registry : " + registry);
+        for(String name : registry.list()){
+            logger.info("registry name : " + name);
+        }
+        Task task = (Task) Naming.lookup("rmi://127.0.0.1:" + registryPort + "/naming/remoteTask");
+        logger.info("task : " + task);
+        Message message = new Message("Hello World");
+        logger.info("message : " + message + " " + message.message);
+        return task.execute(message).toString();
+    }
+
+    @ApiOperation(value="测试用例 A5，启动 RMI 客户端，Naming.lookup 调用远程方法，在本地执行")
+    @GetMapping(value = "/TestA5")
+    @ApiImplicitParams({@ApiImplicitParam(name = "registryPort", value = "serverPort", example = "9000")})
+    public String TestA5(@RequestParam Integer registryPort) throws Exception {
+        Registry registry = LocateRegistry.getRegistry("127.0.0.1", registryPort);
+        logger.info("registry : " + registry);
+        for(String name : registry.list()){
+            logger.info("registry name : " + name);
+        }
+        Task task = (Task) Naming.lookup("rmi://127.0.0.1:" + registryPort + "/naming/localTask");
+        logger.info("task : " + task);
+        Message message = new Message("Hello World");
+        logger.info("message : " + message + " " + message.message);
         return task.execute(message).toString();
     }
 
