@@ -53,12 +53,6 @@ public class JNDITestController {
         }
     }
 
-    public static class AttackObject implements Serializable {
-        public AttackObject() throws Exception {
-            Runtime.getRuntime().exec("mspaint.exe");
-        }
-    }
-
     private static void resetTrustURLCodebase(Boolean trustURLCodebase) throws Exception {
         Field[] fields = RegistryContext.class.getDeclaredFields();
         for (Field field: fields) {
@@ -80,6 +74,12 @@ public class JNDITestController {
                 modifiers.setInt(field, field.getModifiers() & ~Modifier.FINAL);
                 field.set(null, trustURLCodebase.toString());
             }
+        }
+    }
+
+    public static class AttackObject implements Serializable {
+        public AttackObject() throws Exception {
+            Runtime.getRuntime().exec("mspaint.exe");
         }
     }
 
