@@ -115,7 +115,7 @@ public class FastJsonTestController {
         return JSON.toJSONString(simpleObject, SerializerFeature.PrettyFormat);
     }
 
-    @ApiOperation(value="测试用例 A5，使用 Feature.SupportNonPublicField 特性，构造 TemplatesImpl 进行反序列化攻击，新版本已经被黑名单限制")
+    @ApiOperation(value="测试用例 A5，使用 Feature.SupportNonPublicField 特性时，旧版本可构造 TemplatesImpl 进行反序列化攻击，新版本已经被黑名单限制")
     @ApiImplicitParams({@ApiImplicitParam(name = "JsonString", value = "Json 字符串", example = testCaseA3)})
     @GetMapping(value = "/TestA5")
     public String TestA5(@RequestParam String JsonString) {
@@ -138,11 +138,12 @@ public class FastJsonTestController {
         return JSON.toJSONString(simpleObject, SerializerFeature.PrettyFormat);
     }
 
-    @ApiOperation(value="测试用例 A6，使用 java.lang.Class 加载类，利用缓存绕过类型的黑名单限制，新版本已修改为不缓存")
+    @ApiOperation(value="测试用例 A6，旧版本可使用 java.lang.Class 加载类，利用缓存绕过类型的黑名单限制，新版本已修改为不缓存")
     @ApiImplicitParams({@ApiImplicitParam(name = "JsonString", value = "Json 字符串", example = testCaseA4)})
     @GetMapping(value = "/TestA6")
     public String TestA6(@RequestParam String JsonString) {
         ParserConfig.global = new ParserConfig();
+        ParserConfig.global.setAutoTypeSupport(true);
         TypeUtils.clearClassMapping();
         Object simpleObject = JSON.parseObject(JsonString);
         System.out.println("simpleObject : " + simpleObject.getClass().getName());
