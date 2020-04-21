@@ -39,6 +39,7 @@ public class FastJsonTestController {
     public class AttackObject extends AbstractTranslet {
         public AttackObject() throws IOException {
             System.out.println("AttackObject 构造方法被调用！");
+            Runtime.getRuntime().exec("mspaint.exe");
         }
         @Override
         public void transform(DOM document, SerializationHandler[] handlers) throws TransletException {
@@ -89,7 +90,7 @@ public class FastJsonTestController {
         return JSON.toJSONString(simpleObject, SerializerFeature.PrettyFormat);
     }
 
-    @ApiOperation(value="测试用例 A3，使用 ParserConfig.global.addAccept，限制 @type 的 Json 对象的类型的允许范围")
+    @ApiOperation(value="测试用例 A3，使用 ParserConfig.global.addAccept，限制 @type 的 Json 对象的类型的允许范围，允许的会被转换为对象")
     @ApiImplicitParams({@ApiImplicitParam(name = "JsonString", value = "Json 字符串", example = testCaseA2)})
     @GetMapping(value = "/TestA3")
     public String TestA3(@RequestParam String JsonString) {
@@ -101,7 +102,7 @@ public class FastJsonTestController {
         return JSON.toJSONString(simpleObject, SerializerFeature.PrettyFormat);
     }
 
-    @ApiOperation(value="测试用例 A4，使用 ParserConfig.global.addDeny，限制 @type 的 Json 对象的类型的禁止范围")
+    @ApiOperation(value="测试用例 A4，使用 ParserConfig.global.addDeny，限制 @type 的 Json 对象的类型的禁止范围，禁止的会直接报错")
     @ApiImplicitParams({@ApiImplicitParam(name = "JsonString", value = "Json 字符串", example = testCaseA2)})
     @GetMapping(value = "/TestA4")
     public String TestA4(@RequestParam String JsonString) {
