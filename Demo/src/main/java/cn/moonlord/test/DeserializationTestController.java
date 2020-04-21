@@ -74,7 +74,7 @@ public class DeserializationTestController {
     @ApiImplicitParams({@ApiImplicitParam(name = "name", value = "对象参数1", example = testCaseA1)})
     @GetMapping(value = "/TestA1")
     public String TestA1(@RequestParam String name) throws Exception {
-        String fileName = "A1.ser";
+        String fileName = "target/A1.ser";
         SimpleObject obj = new SimpleObject(name);
         ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(fileName));
         out.writeObject(obj);
@@ -88,7 +88,7 @@ public class DeserializationTestController {
     @GetMapping(value = "/TestA2")
     public String TestA2(@RequestParam String name) throws Exception {
         AttackObject obj = new AttackObject(name);
-        String fileName = "A1.ser";
+        String fileName = "target/A1.ser";
         ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(fileName));
         out.writeObject(obj);
         out.close();
@@ -99,7 +99,7 @@ public class DeserializationTestController {
     @ApiOperation(value="测试用例 A3，从文件 A1.ser 中，反序列化对象（可以执行 readObject 中的代码）")
     @GetMapping(value = "/TestA3")
     public String TestA3() throws Exception {
-        String fileName = "A1.ser";
+        String fileName = "target/A1.ser";
         ObjectInputStream in = new ObjectInputStream(new FileInputStream(fileName));
         SimpleObject obj = (SimpleObject) in.readObject();
         in.close();
@@ -110,7 +110,7 @@ public class DeserializationTestController {
     @ApiOperation(value="测试用例 A4，继承并重写 ObjectInputStream 的 resolveClass 方法，限制允许反序列化的类，可以防御攻击")
     @GetMapping(value = "/TestA4")
     public String TestA4() throws Exception {
-        String fileName = "A1.ser";
+        String fileName = "target/A1.ser";
         SafeObjectInputStream in = new SafeObjectInputStream(new FileInputStream(fileName), new Class[]{ SimpleObject.class });
         SimpleObject obj = (SimpleObject) in.readObject();
         in.close();
@@ -125,7 +125,7 @@ public class DeserializationTestController {
         HashMap hashMap = new HashMap<String, String>();
         hashMap.put("testKey", "testValue");
         MapObject obj = new MapObject(name, hashMap);
-        String fileName = "B1.ser";
+        String fileName = "target/B1.ser";
         ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(fileName));
         out.writeObject(obj);
         out.close();
@@ -154,7 +154,7 @@ public class DeserializationTestController {
         beforeTransformerMap.put("testKey", "testValue");
         Map afterTransformerMap = TransformedMap.decorate(beforeTransformerMap, null, transformedChain);
         MapObject obj = new MapObject(name, afterTransformerMap);
-        String fileName = "B1.ser";
+        String fileName = "target/B1.ser";
         ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(fileName));
         out.writeObject(obj);
         out.close();
@@ -165,7 +165,7 @@ public class DeserializationTestController {
     @ApiOperation(value="测试用例 B3，从文件 B1.ser 中，反序列化对象(可以利用 Map 的 setValue 方法，执行 InvokerTransformer 构造的攻击代码)")
     @GetMapping(value = "/TestB3")
     public String TestB3() throws Exception {
-        String fileName = "B1.ser";
+        String fileName = "target/B1.ser";
         ObjectInputStream in = new ObjectInputStream(new FileInputStream(fileName));
         MapObject obj = (MapObject) in.readObject();
         in.close();
@@ -176,7 +176,7 @@ public class DeserializationTestController {
     @ApiOperation(value="测试用例 B4，继承并重写 ObjectInputStream 的 resolveClass 方法，限制允许反序列化的类，可以防御攻击")
     @GetMapping(value = "/TestB4")
     public String TestB4() throws Exception {
-        String fileName = "B1.ser";
+        String fileName = "target/B1.ser";
         SafeObjectInputStream in = new SafeObjectInputStream(
                 new FileInputStream(fileName),
                 new Class[]{ SimpleObject.class, MapObject.class, HashMap.class }
