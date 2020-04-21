@@ -229,7 +229,7 @@ public class JNDITestController {
         return String.valueOf(object);
     }
 
-    @ApiOperation(value="测试用例 B3，在 B2 的基础上，模拟旧版本，设置 com.sun.jndi.ldap.object.trustURLCodebase 为 true，对象成功构造")
+    @ApiOperation(value="测试用例 B3，在 B2 的基础上，模拟旧版本，设置 com.sun.jndi.ldap.object.trustURLCodebase 为 true，对象成功构造（可以执行攻击代码）")
     @GetMapping(value = "/TestB3")
     @ApiImplicitParams({@ApiImplicitParam(name = "registryPort", value = "serverPort", example = "9000")})
     public String TestB3(@RequestParam Integer registryPort) throws Exception {
