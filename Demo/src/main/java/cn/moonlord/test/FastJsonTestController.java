@@ -1,8 +1,7 @@
 package cn.moonlord.test;
 
 import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.parser.Feature;
-import com.alibaba.fastjson.parser.ParserConfig;
+import com.alibaba.fastjson.parser.*;
 import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.alibaba.fastjson.util.TypeUtils;
 import com.sun.jndi.rmi.registry.RegistryContext;
@@ -185,40 +184,40 @@ public class FastJsonTestController {
         return JSON.toJSONString(simpleObject, SerializerFeature.PrettyFormat);
     }
 
-    @ApiOperation(value="测试用例 B1，使用 JNDI+RMI/LDAP 加载远程对象，进行反序列化攻击，新版本 JDK 中，Reference 不会被构造为对象")
+    @ApiOperation(value="测试用例 B1，使用 JNDI+RMI/LDAP 加载远程对象，进行反序列化攻击，新版本 FastJson 会受到黑名单限制")
     @ApiImplicitParams({@ApiImplicitParam(name = "JsonString", value = "Json 字符串", example = testCaseB1)})
     @GetMapping(value = "/TestB1")
     public String TestB1(@RequestParam String JsonString) throws Exception {
+        ParserConfig.global = new ParserConfig();
+        ParserConfig.global.setAutoTypeSupport(true);
+        TypeUtils.clearClassMapping();
+        System.setProperty("com.sun.jndi.rmi.object.trustURLCodebase", "false");
+        System.setProperty("com.sun.jndi.ldap.object.trustURLCodebase", "false");
+        resetRmiTrustURLCodebase(false);
+        resetLdapTrustURLCodebase(false);
+        Object simpleObject = JSON.parseObject(JsonString);
+        System.out.println("simpleObject : " + simpleObject.getClass().getName());
+        return JSON.toJSONString(simpleObject, SerializerFeature.PrettyFormat);
+    }
+
+    @ApiOperation(value="测试用例 B2，在 B1 的基础上，添加 addAccept，模拟旧版本 FastJson，新版本 JDK 中的 Reference 不会被构造为对象")
+    @ApiImplicitParams({@ApiImplicitParam(name = "JsonString", value = "Json 字符串", example = testCaseB1)})
+    @GetMapping(value = "/TestB2")
+    public String TestB2(@RequestParam String JsonString) throws Exception {
         ParserConfig.global = new ParserConfig();
         ParserConfig.global.setAutoTypeSupport(true);
         ParserConfig.global.addAccept("com.");
         TypeUtils.clearClassMapping();
         System.setProperty("com.sun.jndi.rmi.object.trustURLCodebase", "false");
         System.setProperty("com.sun.jndi.ldap.object.trustURLCodebase", "false");
-        resetLdapTrustURLCodebase(false);
+        resetRmiTrustURLCodebase(false);
         resetLdapTrustURLCodebase(false);
         Object simpleObject = JSON.parseObject(JsonString);
         System.out.println("simpleObject : " + simpleObject.getClass().getName());
         return JSON.toJSONString(simpleObject, SerializerFeature.PrettyFormat);
     }
 
-    @ApiOperation(value="测试用例 B2，在 B1 的基础上，设置 trustURLCodebase 为 true，模拟旧版本 JDK，仍会受到 FastJson 的黑名单限制")
-    @ApiImplicitParams({@ApiImplicitParam(name = "JsonString", value = "Json 字符串", example = testCaseB1)})
-    @GetMapping(value = "/TestB2")
-    public String TestB2(@RequestParam String JsonString) throws Exception {
-        ParserConfig.global = new ParserConfig();
-        ParserConfig.global.setAutoTypeSupport(true);
-        TypeUtils.clearClassMapping();
-        System.setProperty("com.sun.jndi.rmi.object.trustURLCodebase", "true");
-        System.setProperty("com.sun.jndi.ldap.object.trustURLCodebase", "true");
-        resetLdapTrustURLCodebase(true);
-        resetLdapTrustURLCodebase(true);
-        Object simpleObject = JSON.parseObject(JsonString);
-        System.out.println("simpleObject : " + simpleObject.getClass().getName());
-        return JSON.toJSONString(simpleObject, SerializerFeature.PrettyFormat);
-    }
-
-    @ApiOperation(value="测试用例 B3，在 B2 的基础上，添加 addAccept，模拟旧版本 FastJson，对象成功构造（可以执行攻击代码）")
+    @ApiOperation(value="测试用例 B3，在 B2 的基础上，设置 trustURLCodebase 为 true，模拟旧版本 JDK，对象成功构造（可以执行攻击代码）")
     @ApiImplicitParams({@ApiImplicitParam(name = "JsonString", value = "Json 字符串", example = testCaseB1)})
     @GetMapping(value = "/TestB3")
     public String TestB3(@RequestParam String JsonString) throws Exception {
@@ -228,7 +227,7 @@ public class FastJsonTestController {
         TypeUtils.clearClassMapping();
         System.setProperty("com.sun.jndi.rmi.object.trustURLCodebase", "true");
         System.setProperty("com.sun.jndi.ldap.object.trustURLCodebase", "true");
-        resetLdapTrustURLCodebase(true);
+        resetRmiTrustURLCodebase(true);
         resetLdapTrustURLCodebase(true);
         Object simpleObject = JSON.parseObject(JsonString);
         System.out.println("simpleObject : " + simpleObject.getClass().getName());
