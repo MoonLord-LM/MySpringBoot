@@ -57,6 +57,12 @@
             <version>1.2.60</version>
         </dependency>
 
+        <dependency>
+            <groupId>org.yaml</groupId>
+            <artifactId>snakeyaml</artifactId>
+            <version>1.26</version>
+        </dependency>
+
     </dependencies>
 
     <!-- 编译打包 -->
@@ -81,7 +87,7 @@
                     </dependency>
                 </dependencies>
             </plugin>
-            
+
         </plugins>
     </build>
 
