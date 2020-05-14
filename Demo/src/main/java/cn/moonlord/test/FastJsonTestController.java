@@ -36,7 +36,7 @@ public class FastJsonTestController {
         }
     }
 
-    public class AttackObject extends AbstractTranslet {
+    public static class AttackObject extends AbstractTranslet {
         public AttackObject() throws IOException {
             System.out.println("AttackObject 构造方法被调用！");
             Runtime.getRuntime().exec("mspaint.exe");

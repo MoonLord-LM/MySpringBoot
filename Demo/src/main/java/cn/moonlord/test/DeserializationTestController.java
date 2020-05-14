@@ -43,7 +43,7 @@ public class DeserializationTestController {
         }
     }
 
-    public class SafeObjectInputStream extends ObjectInputStream{
+    public static class SafeObjectInputStream extends ObjectInputStream{
 
         private Class<?>[] safeClass;
 
