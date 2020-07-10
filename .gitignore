@@ -27,7 +27,8 @@ mvnw.cmd
 /.nb-gradle/
 
 ### Temp File ###
-*/target/
-*/logs/
+target/
+jar/
+logs/
 *.log
 *.ser
