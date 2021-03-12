@@ -13,6 +13,11 @@ https://maven.aliyun.com
 
 # TODO
 
+    <groupId>XXX</groupId>
+    <artifactId>XXX</artifactId>
+    <version>XXX-SNAPSHOT</version>
+    <packaging>pom</packaging>
+
     <properties>
         <!-- JDK 版本 -->
         <java.version>1.8</java.version>
@@ -24,10 +29,15 @@ https://maven.aliyun.com
         <maven.compiler.encoding>UTF-8</maven.compiler.encoding>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-        <!-- Spring 版本 -->
-        <spring.boot.version>2.3.4.RELEASE</spring.boot.version><!-- 2020.09.17-->
-        <spring.cloud.version>Hoxton.SR9</spring.cloud.version><!-- 2020.11.09-->
-        <spring.cloud.alibaba.version>2.2.5.RELEASE</spring.cloud.alibaba.version><!-- 2021.02.01-->
+        <!--
+                Spring 版本
+                https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-dependencies
+                https://mvnrepository.com/artifact/org.springframework.cloud/spring-cloud-dependencies
+                https://mvnrepository.com/artifact/com.alibaba.cloud/spring-cloud-alibaba-dependencies
+        -->
+        <spring.boot.version>2.3.9.RELEASE</spring.boot.version> <!-- 发布时间：2021.02.18 -->
+        <spring.cloud.version>Hoxton.SR10</spring.cloud.version> <!-- 发布时间：2021.02.12-->
+        <spring.cloud.alibaba.version>2.2.5.RELEASE</spring.cloud.alibaba.version><!-- 发布时间：2021.01.31-->
     </properties>
 
     <dependencyManagement>
@@ -55,4 +65,3 @@ https://maven.aliyun.com
             </dependency>
         </dependencies>
     </dependencyManagement>
-
