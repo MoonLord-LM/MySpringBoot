@@ -13,7 +13,7 @@ import javax.servlet.http.HttpServletRequest;
 
 @Api
 @RestController
-public class Controller implements ErrorController {
+public class ClientController implements ErrorController {
 
     @Override
     public String getErrorPath() { return null; }
