@@ -1,13 +1,13 @@
-package cn.moonlord.springboot.demo;
+package cn.moonlord.springboot.client;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class Application {
+public class ClientApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(Application.class, args);
+        SpringApplication.run(ClientApplication.class, args);
     }
 
 }
