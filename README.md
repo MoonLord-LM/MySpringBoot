@@ -1,5 +1,7 @@
-# Spring-Boot-Demo
+# MySpringBoot
 Spring Boot Demo Projects
+
+[![Java CI with Maven](https://github.com/MoonLord-LM/MySpringBoot/actions/workflows/maven.yml/badge.svg)](https://github.com/MoonLord-LM/MySpringBoot/actions/workflows/maven.yml)
 
 # Maven Settings  
 https://maven.aliyun.com  
