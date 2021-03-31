@@ -13,7 +13,7 @@ https://maven.aliyun.com
         <url>https://maven.aliyun.com/repository/public</url>
     </mirror>
 
-# 在远程服务器上编译本工程
+# Build by Maven
 
     mkdir -m 777 -p '/home/github' && cd '/home/github'
     git clone 'https://github.com/MoonLord-LM/MySpringBoot.git'
