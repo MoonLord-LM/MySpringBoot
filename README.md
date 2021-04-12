@@ -19,7 +19,7 @@ https://maven.aliyun.com
     git clone 'https://github.com/MoonLord-LM/MySpringBoot.git'
     cd '/home/github/MySpringBoot'
     git pull -v --progress 'origin'
-    mvn -B -U -e install --file 'parent/pom.xml' && mvn -B -U -e package --file 'pom.xml'
+    mvn -B -U -e install --file 'parent/pom.xml' && mvn -B -U -e install --file 'pom.xml'
 
 # Build in Windows
 
@@ -27,5 +27,4 @@ https://maven.aliyun.com
     git clone "https://github.com/MoonLord-LM/MySpringBoot.git"
     cd "C:/Software/GitHub/MySpringBoot"
     git pull -v --progress "origin"
-    mvn -B -U -e install --file "parent/pom.xml" & mvn -B -U -e package --file "pom.xml"
-    
+    mvn -B -U -e install --file "parent/pom.xml" & mvn -B -U -e install --file "pom.xml"
