@@ -13,11 +13,19 @@ https://maven.aliyun.com
         <url>https://maven.aliyun.com/repository/public</url>
     </mirror>
 
-# Build by Maven
+# Build in Linux
 
     mkdir -m 777 -p '/home/github' && cd '/home/github'
     git clone 'https://github.com/MoonLord-LM/MySpringBoot.git'
     cd '/home/github/MySpringBoot'
     git pull -v --progress 'origin'
-    mvn -B -U -e install --file "parent/pom.xml"
-    mvn -B -U -e package --file "pom.xml"
+    mvn -B -U -e install --file 'parent/pom.xml' && mvn -B -U -e package --file 'pom.xml'
+
+# Build in Windows
+
+    mkdir "C:/Software/GitHub/" & cd "C:/Software/GitHub/"
+    git clone "https://github.com/MoonLord-LM/MySpringBoot.git"
+    cd "C:/Software/GitHub/MySpringBoot"
+    git pull -v --progress "origin"
+    mvn -B -U -e install --file "parent/pom.xml" & mvn -B -U -e package --file "pom.xml"
+    
