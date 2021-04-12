@@ -3,17 +3,7 @@ Spring Boot Demo Projects
 
 [![Java CI with Maven](https://github.com/MoonLord-LM/MySpringBoot/actions/workflows/maven.yml/badge.svg)](https://github.com/MoonLord-LM/MySpringBoot/actions/workflows/maven.yml)
 
-# Maven Settings  
-https://maven.aliyun.com  
-
-    <mirror>
-        <id>aliyunmaven</id>
-        <mirrorOf>*</mirrorOf>
-        <name>阿里云公共仓库</name>
-        <url>https://maven.aliyun.com/repository/public</url>
-    </mirror>
-
-# Build in Linux
+# Build in Linux  
 
     mkdir -m 777 -p '/home/github' && cd '/home/github'
     git clone 'https://github.com/MoonLord-LM/MySpringBoot.git'
@@ -21,10 +11,55 @@ https://maven.aliyun.com
     git pull -v --progress 'origin'
     mvn -B -U -e install --file 'parent/pom.xml' && mvn -B -U -e install --file 'pom.xml'
 
-# Build in Windows
+# Build in Windows  
 
     mkdir "C:/Software/GitHub/" & cd "C:/Software/GitHub/"
     git clone "https://github.com/MoonLord-LM/MySpringBoot.git"
     cd "C:/Software/GitHub/MySpringBoot"
     git pull -v --progress "origin"
     mvn -B -U -e install --file "parent/pom.xml" & mvn -B -U -e install --file "pom.xml"
+
+# Maven Settings  
+
+    <!-- 阿里云公共仓库 -->
+    <!-- https://maven.aliyun.com/mvn/guide -->
+    <mirror>
+      <id>aliyun-maven-central</id>
+      <mirrorOf>central</mirrorOf>
+      <url>https://maven.aliyun.com/repository/central</url>
+    </mirror>
+    <mirror>
+      <id>aliyun-maven-public</id>
+      <mirrorOf>jcenter,public</mirrorOf>
+      <url>https://maven.aliyun.com/repository/public</url>
+    </mirror>
+    <mirror>
+      <id>aliyun-maven-google</id>
+      <mirrorOf>google</mirrorOf>
+      <url>https://maven.aliyun.com/repository/google</url>
+    </mirror>
+    <mirror>
+      <id>aliyun-maven-gradle-plugin</id>
+      <mirrorOf>gradle-plugin</mirrorOf>
+      <url>https://maven.aliyun.com/repository/gradle-plugin</url>
+    </mirror>
+    <mirror>
+      <id>aliyun-maven-spring</id>
+      <mirrorOf>spring</mirrorOf>
+      <url>https://maven.aliyun.com/repository/spring</url>
+    </mirror>
+    <mirror>
+      <id>aliyun-maven-spring-plugin</id>
+      <mirrorOf>spring-plugin</mirrorOf>
+      <url>https://maven.aliyun.com/repository/spring-plugin</url>
+    </mirror>
+    <mirror>
+      <id>aliyun-maven-grails-core</id>
+      <mirrorOf>grails-core</mirrorOf>
+      <url>https://maven.aliyun.com/repository/grails-core</url>
+    </mirror>
+    <mirror>
+      <id>aliyun-maven-apache-snapshots</id>
+      <mirrorOf>apache-snapshots</mirrorOf>
+      <url>https://maven.aliyun.com/repository/apache-snapshots</url>
+    </mirror>
