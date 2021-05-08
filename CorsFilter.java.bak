@@ -24,69 +24,56 @@ import java.util.List;
 import java.util.Locale;
 import java.util.concurrent.CopyOnWriteArrayList;
 
-/**
- * 跨域访问过滤器
- * 默认允许所有从 .huawei.com 来的跨域请求
- *
- * created by r00376080 on 2017-05-18
- * updated by L00429783 on 2021-05-07
- *
- * @since 2021
- */
 @Component
 @RefreshScope
 public class CorsFilter implements Filter {
 
     private static final Logger logger = LoggerFactory.getLogger(CorsFilter.class);
 
-    private static final List<String> DEFAULT_TRUST_DOMAIN = Arrays.asList(
+    private static final String[] DEFAULT_TRUST_DOMAIN_SUFFIXES = new String[] {
             ".huawei.com"
-    );
+    };
 
-    private static final List<String> DEFAULT_EXPOSE_HEADERS = Arrays.asList(
+    private static final String[] DEFAULT_EXPOSE_HEADERS = new String[] {
             HttpHeaders.CACHE_CONTROL,
-            HttpHeaders.CONTENT_DISPOSITION,
-            HttpHeaders.CONTENT_ENCODING,
             HttpHeaders.CONTENT_LANGUAGE,
             HttpHeaders.CONTENT_LENGTH,
-            HttpHeaders.CONTENT_LOCATION,
-            HttpHeaders.CONTENT_RANGE,
             HttpHeaders.CONTENT_TYPE,
             HttpHeaders.EXPIRES,
             HttpHeaders.LAST_MODIFIED,
             HttpHeaders.PRAGMA
-    );
+    };
 
-    private static final CopyOnWriteArrayList<String> trustDomains = new CopyOnWriteArrayList<>();
+    private static final CopyOnWriteArrayList<String> trustDomainSuffixes = new CopyOnWriteArrayList<>();
 
     private static final CopyOnWriteArrayList<String> exposeHeaders = new CopyOnWriteArrayList<>();
 
     /**
-     * 信任的跨域请求来源域名（后缀匹配，不区分大小写）
+     * 允许的请求来源的域名后缀（不区分大小写）
      */
-    @Value("#{ '${sdcloud.zuul.cors.trustDomains:}'.split(',') }")
-    private void setTrustDomains(List<String> configTrustDomains){
-        logger.info("setTrustDomains configTrustDomains: {}", configTrustDomains);
+    @Value("#{ '${sdcloud.zuul.cors.trustDomainSuffixes:}'.split(',') }")
+    private void setTrustDomainSuffixes(List<String> configTrustDomainSuffixes){
+        logger.info("setTrustDomainSuffixes configTrustDomainSuffixes: {}", configTrustDomainSuffixes);
         try {
-            trustDomains.clear();
-            if (StringUtils.isEmpty(configTrustDomains)) {
-                trustDomains.addAll(DEFAULT_TRUST_DOMAIN);
+            trustDomainSuffixes.clear();
+            if (StringUtils.isEmpty(configTrustDomainSuffixes)) {
+                trustDomainSuffixes.addAll(Arrays.asList(DEFAULT_TRUST_DOMAIN_SUFFIXES));
             }
             else {
-                trustDomains.addAll(configTrustDomains);
+                trustDomainSuffixes.addAll(configTrustDomainSuffixes);
             }
-            for (int i = 0; i < trustDomains.size(); i++) {
-                trustDomains.set(i, trustDomains.get(i).toLowerCase(Locale.ROOT));
+            for (int i = 0; i < trustDomainSuffixes.size(); i++) {
+                trustDomainSuffixes.set(i, trustDomainSuffixes.get(i).toLowerCase(Locale.ROOT));
             }
         }
         catch (Exception e) {
-            logger.error("setTrustDomains error", e);
+            logger.error("setTrustDomainSuffixes error", e);
         }
-        logger.info("setTrustDomains ok: {}", trustDomains);
+        logger.info("setTrustDomainSuffixes ok: {}", trustDomainSuffixes);
     }
 
     /**
-     * 信任的跨域请求来源域名（后缀匹配，不区分大小写）
+     * 允许客户端读取的响应头
      */
     @Value("#{ '${sdcloud.zuul.cors.exposeHeaders:}'.split(',') }")
     private void setExposeHeaders(List<String> configExposeHeaders){
@@ -94,7 +81,7 @@ public class CorsFilter implements Filter {
         try {
             exposeHeaders.clear();
             if (StringUtils.isEmpty(configExposeHeaders)) {
-                exposeHeaders.addAll(DEFAULT_EXPOSE_HEADERS);
+                exposeHeaders.addAll(Arrays.asList(DEFAULT_EXPOSE_HEADERS));
             }
             else {
                 exposeHeaders.addAll(configExposeHeaders);
@@ -148,33 +135,38 @@ public class CorsFilter implements Filter {
             }
             httpResponse.setHeader(HttpHeaders.ORIGIN + "-" + HttpHeaders.HOST, originHost);
 
-            for (String trustDomain : trustDomains) {
-                if (originHost.endsWith(trustDomain)) {
+            for (String trustDomainSuffix : trustDomainSuffixes) {
+                if (originHost.endsWith(trustDomainSuffix)) {
+                    // Access-Control-Allow-Origin，允许的请求来源
                     httpResponse.setHeader(HttpHeaders.ACCESS_CONTROL_ALLOW_ORIGIN, origin);
+
+                    // Access-Control-Allow-Credentials，允许请求携带 Cookie
                     httpResponse.setHeader(HttpHeaders.ACCESS_CONTROL_ALLOW_CREDENTIALS, "true");
 
+                    // Access-Control-Max-Age，允许跨域策略的缓存时间（10 分钟）
+                    httpResponse.setHeader(HttpHeaders.ACCESS_CONTROL_MAX_AGE, String.valueOf(600));
+
+                    // Access-Control-Expose-Headers，允许客户端读取的响应头
                     if (!StringUtils.isEmpty(exposeHeaders)) {
                         httpResponse.setHeader(HttpHeaders.ACCESS_CONTROL_EXPOSE_HEADERS, StringUtils.collectionToDelimitedString(exposeHeaders, ","));
                     }
 
-                    // Access-Control-Request-Method 为空时，允许所有的 Method 跨域
-                    String methods = httpRequest.getHeader(HttpHeaders.ACCESS_CONTROL_REQUEST_METHOD);
-                    if (!StringUtils.isEmpty(methods)) {
-                        httpResponse.setHeader(HttpHeaders.ACCESS_CONTROL_ALLOW_METHODS, methods);
+                    // Access-Control-Allow-Methods，允许的请求方法
+                    String allowMethods = httpRequest.getHeader(HttpHeaders.ACCESS_CONTROL_REQUEST_METHOD);
+                    httpResponse.setHeader(HttpHeaders.ACCESS_CONTROL_REQUEST_METHOD, String.valueOf(allowMethods));
+                    if (StringUtils.isEmpty(allowMethods)) {
+                        allowMethods = CorsConfiguration.ALL;
                     }
-                    else {
-                        httpResponse.setHeader(HttpHeaders.ACCESS_CONTROL_ALLOW_METHODS, "GET,POST,PUT,DELETE,HEAD,PATCH,OPTIONS");
-                    }
+                    httpResponse.setHeader(HttpHeaders.ACCESS_CONTROL_ALLOW_METHODS, allowMethods);
 
-                    // Access-Control-Request-Headers 为空时，允许所有的 Header 跨域
-                    String headers = httpRequest.getHeader(HttpHeaders.ACCESS_CONTROL_REQUEST_HEADERS);
-                    if (!StringUtils.isEmpty(headers)) {
-                        httpResponse.setHeader(HttpHeaders.ACCESS_CONTROL_ALLOW_HEADERS, headers);
+                    // Access-Control-Allow-Headers，允许的请求头
+                    String allowHeaders = httpRequest.getHeader(HttpHeaders.ACCESS_CONTROL_REQUEST_HEADERS);
+                    httpResponse.setHeader(HttpHeaders.ACCESS_CONTROL_REQUEST_HEADERS, String.valueOf(allowHeaders));
+                    if (StringUtils.isEmpty(allowHeaders)) {
+                        allowHeaders = CorsConfiguration.ALL;
                     }
-                    else {
-                        httpResponse.setHeader(HttpHeaders.ACCESS_CONTROL_ALLOW_HEADERS, CorsConfiguration.ALL);
-                    }
-                    return;
+                    httpResponse.setHeader(HttpHeaders.ACCESS_CONTROL_ALLOW_HEADERS, allowHeaders);
+                    break;
                 }
             }
         }
@@ -188,8 +180,8 @@ public class CorsFilter implements Filter {
             // Options 请求，直接返回 200
             if(HttpMethod.OPTIONS.matches(httpRequest.getMethod())) {
                 httpResponse.setStatus(200);
-                httpResponse.setContentType("application/json;charset=UTF-8");
-                httpResponse.getWriter().print("SDCloud - Zuul - CorsFilter : allow options, return 200");
+                httpResponse.setContentType("text/html; charset=utf-8");
+                httpResponse.getWriter().print("SDCloud - Zuul - CorsFilter : allow options request");
                 httpResponse.getWriter().flush();
             }
         }
