@@ -25,10 +25,6 @@ import java.lang.reflect.Modifier;
  * Object simpleObject = JSON.parseObject(JsonString);
  * 建议尽可能，精确指定对象类型：
  * SimpleVO simpleObject = JSON.parseObject(JsonString, SimpleVO.class);
- *
- * updated by L00429783 on 2021-05-11
- *
- * @since 2021
  */
 @Configuration
 @AutoConfigureOrder(Ordered.HIGHEST_PRECEDENCE)
