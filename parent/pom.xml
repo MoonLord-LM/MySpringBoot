@@ -106,6 +106,13 @@
                 <version>3.0.0</version>
             </dependency>
 
+            <!-- https://mvnrepository.com/artifact/org.bouncycastle/bcprov-ext-jdk15on -->
+            <dependency>
+                <groupId>org.bouncycastle</groupId>
+                <artifactId>bcprov-ext-jdk15on</artifactId>
+                <version>1.69</version>
+            </dependency>
+
             <!-- https://mvnrepository.com/artifact/org.bouncycastle/bcprov-jdk15on -->
             <dependency>
                 <groupId>org.bouncycastle</groupId>
