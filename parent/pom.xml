@@ -27,6 +27,14 @@
     <dependencyManagement>
         <dependencies>
 
+            <!-- https://mvnrepository.com/artifact/org.codehaus.groovy/groovy-all -->
+            <dependency>
+                <groupId>org.codehaus.groovy</groupId>
+                <artifactId>groovy-all</artifactId>
+                <version>3.0.9</version>
+                <type>pom</type>
+            </dependency>
+
             <!-- https://mvnrepository.com/artifact/io.netty/netty-bom -->
             <dependency>
                 <groupId>io.netty</groupId>
@@ -309,13 +317,6 @@
                 <groupId>org.apache.httpcomponents</groupId>
                 <artifactId>httpclient-cache</artifactId>
                 <version>4.5.13</version>
-            </dependency>
-
-            <!-- https://mvnrepository.com/artifact/org.codehaus.groovy/groovy -->
-            <dependency>
-                <groupId>org.codehaus.groovy</groupId>
-                <artifactId>groovy</artifactId>
-                <version>3.0.9</version>
             </dependency>
 
             <!-- https://mvnrepository.com/artifact/com.google.guava/guava -->
