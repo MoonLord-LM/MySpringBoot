@@ -20,7 +20,7 @@ jobs:
       uses: actions/setup-java@v1
       with:
         java-version: 1.8
-    - name: Build with Maven
+    - name: Build with Maven - parent
       run: mvn -B -U -e install --file "parent/pom.xml"
-    - name: Build with Maven
+    - name: Build with Maven - all-modules
       run: mvn -B -U -e install --file "pom.xml"
