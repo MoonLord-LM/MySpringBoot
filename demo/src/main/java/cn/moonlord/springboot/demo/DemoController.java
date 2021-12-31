@@ -3,17 +3,23 @@ package cn.moonlord.springboot.demo;
 import freemarker.core.TemplateClassResolver;
 import freemarker.template.Configuration;
 import freemarker.template.Template;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.io.IOException;
 import java.io.StringReader;
 import java.io.StringWriter;
 import java.nio.charset.StandardCharsets;
-import java.util.*;
+import java.util.HashMap;
+import java.util.Locale;
+import java.util.Map;
 
 @RestController
 public class DemoController {
+
+    private static final Logger logger = LoggerFactory.getLogger(DemoController.class);
 
     @RequestMapping("/**")
     public String index() throws Exception {
@@ -32,6 +38,14 @@ public class DemoController {
         Template template = new Template("temp", new StringReader(source), cfg);
         StringWriter out = new StringWriter();
         template.process(params, out);
+        logger.info("\r\n" + "info 1: {}" + "\r\n" + "2: {}" + "\r\n", out + "\r\n" + out, new double[3]);
+        logger.info("\r\n" + "crlf test" + "\r\n" + "\r\n" + "\r\n");
+        logger.error("error", new IllegalArgumentException("test"));
+        logger.error("debug password: {}", "huawei123");
+        logger.error("warn ID card number: {}", "420922199309030000");
+        logger.error(new String(new char[100000]));
+        logger.error(new String(new char[100000]));
+        logger.error(new String(new char[100000]));
         return out.toString();
     }
 
