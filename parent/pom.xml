@@ -31,7 +31,7 @@
             <dependency>
                 <groupId>org.apache.logging.log4j</groupId>
                 <artifactId>log4j-bom</artifactId>
-                <version>2.17.0</version>
+                <version>2.17.1</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
@@ -49,7 +49,7 @@
             <dependency>
                 <groupId>io.netty</groupId>
                 <artifactId>netty-bom</artifactId>
-                <version>4.1.72.Final</version>
+                <version>4.1.73.Final</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
@@ -159,105 +159,105 @@
             <dependency>
                 <groupId>org.apache.tomcat.embed</groupId>
                 <artifactId>tomcat-embed-core</artifactId>
-                <version>9.0.56</version>
+                <version>9.0.58</version>
             </dependency>
 
             <!-- https://mvnrepository.com/artifact/org.apache.tomcat.embed/tomcat-embed-websocket -->
             <dependency>
                 <groupId>org.apache.tomcat.embed</groupId>
                 <artifactId>tomcat-embed-websocket</artifactId>
-                <version>9.0.56</version>
+                <version>9.0.58</version>
             </dependency>
 
             <!-- https://mvnrepository.com/artifact/org.apache.tomcat.embed/tomcat-embed-jasper -->
             <dependency>
                 <groupId>org.apache.tomcat.embed</groupId>
                 <artifactId>tomcat-embed-jasper</artifactId>
-                <version>9.0.56</version>
+                <version>9.0.58</version>
             </dependency>
 
             <!-- https://mvnrepository.com/artifact/org.apache.tomcat.embed/tomcat-embed-el -->
             <dependency>
                 <groupId>org.apache.tomcat.embed</groupId>
                 <artifactId>tomcat-embed-el</artifactId>
-                <version>9.0.56</version>
+                <version>9.0.58</version>
             </dependency>
 
             <!-- https://mvnrepository.com/artifact/org.apache.tomcat/tomcat-annotations-api -->
             <dependency>
                 <groupId>org.apache.tomcat</groupId>
                 <artifactId>tomcat-annotations-api</artifactId>
-                <version>9.0.56</version>
+                <version>9.0.58</version>
             </dependency>
 
             <!-- https://mvnrepository.com/artifact/org.apache.tomcat/tomcat-servlet-api -->
             <dependency>
                 <groupId>org.apache.tomcat</groupId>
                 <artifactId>tomcat-servlet-api</artifactId>
-                <version>9.0.56</version>
+                <version>9.0.58</version>
             </dependency>
 
             <!-- https://mvnrepository.com/artifact/org.apache.tomcat/tomcat-jsp-api -->
             <dependency>
                 <groupId>org.apache.tomcat</groupId>
                 <artifactId>tomcat-jsp-api</artifactId>
-                <version>9.0.56</version>
+                <version>9.0.58</version>
             </dependency>
 
             <!-- https://mvnrepository.com/artifact/org.apache.tomcat/tomcat-el-api -->
             <dependency>
                 <groupId>org.apache.tomcat</groupId>
                 <artifactId>tomcat-el-api</artifactId>
-                <version>9.0.56</version>
+                <version>9.0.58</version>
             </dependency>
 
             <!-- https://mvnrepository.com/artifact/org.apache.tomcat/tomcat-jdbc -->
             <dependency>
                 <groupId>org.apache.tomcat</groupId>
                 <artifactId>tomcat-jdbc</artifactId>
-                <version>9.0.56</version>
+                <version>9.0.58</version>
             </dependency>
 
             <!-- https://mvnrepository.com/artifact/org.apache.tomcat/tomcat-juli -->
             <dependency>
                 <groupId>org.apache.tomcat</groupId>
                 <artifactId>tomcat-juli</artifactId>
-                <version>9.0.56</version>
+                <version>9.0.58</version>
             </dependency>
 
             <!-- https://mvnrepository.com/artifact/org.apache.tomcat/tomcat-catalina -->
             <dependency>
                 <groupId>org.apache.tomcat</groupId>
                 <artifactId>tomcat-catalina</artifactId>
-                <version>9.0.56</version>
+                <version>9.0.58</version>
             </dependency>
 
             <!-- https://mvnrepository.com/artifact/org.apache.tomcat/tomcat-coyote -->
             <dependency>
                 <groupId>org.apache.tomcat</groupId>
                 <artifactId>tomcat-coyote</artifactId>
-                <version>9.0.56</version>
+                <version>9.0.58</version>
             </dependency>
 
             <!-- https://mvnrepository.com/artifact/org.apache.tomcat/tomcat-jasper -->
             <dependency>
                 <groupId>org.apache.tomcat</groupId>
                 <artifactId>tomcat-jasper</artifactId>
-                <version>9.0.56</version>
+                <version>9.0.58</version>
             </dependency>
 
             <!-- https://mvnrepository.com/artifact/org.apache.tomcat/tomcat-dbcp -->
             <dependency>
                 <groupId>org.apache.tomcat</groupId>
                 <artifactId>tomcat-dbcp</artifactId>
-                <version>9.0.56</version>
+                <version>9.0.58</version>
             </dependency>
 
             <!-- https://mvnrepository.com/artifact/org.apache.tomcat/tomcat-util -->
             <dependency>
                 <groupId>org.apache.tomcat</groupId>
                 <artifactId>tomcat-util</artifactId>
-                <version>9.0.56</version>
+                <version>9.0.58</version>
             </dependency>
 
             <!-- https://mvnrepository.com/artifact/org.springframework.retry/spring-retry -->
@@ -320,7 +320,7 @@
             <dependency>
                 <groupId>com.alibaba</groupId>
                 <artifactId>fastjson</artifactId>
-                <version>1.2.78</version>
+                <version>1.2.79</version>
             </dependency>
 
             <!-- https://mvnrepository.com/artifact/com.google.code.gson/gson -->
@@ -495,7 +495,7 @@
             <dependency>
                 <groupId>mysql</groupId>
                 <artifactId>mysql-connector-java</artifactId>
-                <version>8.0.27</version>
+                <version>8.0.28</version>
             </dependency>
 
             <!-- https://mvnrepository.com/artifact/org.postgresql/postgresql -->
@@ -509,7 +509,7 @@
             <dependency>
                 <groupId>org.mybatis.spring.boot</groupId>
                 <artifactId>mybatis-spring-boot-starter</artifactId>
-                <version>2.2.0</version>
+                <version>2.2.1</version>
             </dependency>
 
         </dependencies>
@@ -523,7 +523,7 @@
                 <plugin>
                     <groupId>org.springframework.boot</groupId>
                     <artifactId>spring-boot-maven-plugin</artifactId>
-                    <version>2.6.2</version>
+                    <version>2.6.3</version>
                 </plugin>
 
                 <!-- https://mvnrepository.com/artifact/org.apache.maven.plugins/maven-source-plugin -->
@@ -538,6 +538,13 @@
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-javadoc-plugin</artifactId>
                     <version>3.3.1</version>
+                </plugin>
+
+                <!-- https://mvnrepository.com/artifact/org.apache.maven.plugins/maven-dependency-plugin -->
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-dependency-plugin</artifactId>
+                    <version>3.2.0</version>
                 </plugin>
 
             </plugins>
