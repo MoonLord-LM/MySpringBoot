@@ -5,10 +5,11 @@
     <conversionRule conversionWord="m" converterClass="cn.moonlord.springboot.demo.AntiLogForgingMessageConverter" />
     <conversionRule conversionWord="msg" converterClass="cn.moonlord.springboot.demo.AntiLogForgingMessageConverter" />
     <conversionRule conversionWord="message" converterClass="cn.moonlord.springboot.demo.AntiLogForgingMessageConverter" />
-    <!-- 处理敏感打印 -->
+    <!-- 处理敏感打印
     <conversionRule conversionWord="m" converterClass="cn.moonlord.springboot.demo.SensitiveLogMessageConverter" />
     <conversionRule conversionWord="msg" converterClass="cn.moonlord.springboot.demo.SensitiveLogMessageConverter" />
     <conversionRule conversionWord="message" converterClass="cn.moonlord.springboot.demo.SensitiveLogMessageConverter" />
+     -->
 
     <include resource="org/springframework/boot/logging/logback/base.xml"/>
 

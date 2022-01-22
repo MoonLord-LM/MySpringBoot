@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<settings xmlns="http://maven.apache.org/SETTINGS/1.0.0"
+          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xsi:schemaLocation="http://maven.apache.org/SETTINGS/1.0.0 http://maven.apache.org/xsd/settings-1.0.0.xsd">
+
+  <localRepository>D:\\Software\\apache-maven-3.6.0\\mvnRepository</localRepository>
+
+  <pluginGroups>
+  </pluginGroups>
+
+  <proxies>
+  </proxies>
+
+  <servers>
+  </servers>
+
+  <mirrors>
+  </mirrors>
+
+  <profiles>
+    <profile>
+      <id>internal</id>
+      <repositories>
+
+        <!-- https://repo1.maven.org/maven2/org/jsoup/jsoup/1.14.3/jsoup-1.14.3.jar -->
+        <repository>
+          <id>maven-mirror</id>
+          <url>https://repo1.maven.org/maven2/</url>
+          <releases>
+            <enabled>true</enabled>
+            <updatePolicy>always</updatePolicy>
+          </releases>
+          <snapshots>
+            <enabled>true</enabled>
+            <updatePolicy>always</updatePolicy>
+          </snapshots>
+        </repository>
+
+        <!-- https://maven.aliyun.com/repository/public/org/jsoup/jsoup/1.14.3/jsoup-1.14.3.jar -->
+        <repository>
+          <id>aliyun-mirror</id>
+          <url>https://maven.aliyun.com/repository/public/</url>
+          <releases>
+            <enabled>true</enabled>
+            <updatePolicy>always</updatePolicy>
+          </releases>
+          <snapshots>
+            <enabled>true</enabled>
+            <updatePolicy>always</updatePolicy>
+          </snapshots>
+        </repository>
+
+        <!-- https://repo.huaweicloud.com/repository/maven/org/jsoup/jsoup/1.14.3/jsoup-1.14.3.jar -->
+        <repository>
+          <id>huaweicloud-mirror</id>
+          <url>https://repo.huaweicloud.com/repository/maven/</url>
+          <releases>
+            <enabled>true</enabled>
+            <updatePolicy>always</updatePolicy>
+          </releases>
+          <snapshots>
+            <enabled>true</enabled>
+            <updatePolicy>always</updatePolicy>
+          </snapshots>
+        </repository>
+
+        <!-- http://maven.scijava.org/content/repositories/public/org/jsoup/jsoup/1.14.3/jsoup-1.14.3.jar -->
+        <repository>
+          <id>scijava-mirror</id>
+          <url>http://maven.scijava.org/content/repositories/public/</url>
+          <releases>
+            <enabled>true</enabled>
+            <updatePolicy>always</updatePolicy>
+          </releases>
+          <snapshots>
+            <enabled>true</enabled>
+            <updatePolicy>always</updatePolicy>
+          </snapshots>
+        </repository>
+
+      </repositories>
+      <pluginRepositories>
+
+        <pluginRepository>
+          <id>maven-plugin-mirror</id>
+          <url>https://repo1.maven.org/maven2/</url>
+          <releases>
+            <enabled>true</enabled>
+            <updatePolicy>always</updatePolicy>
+          </releases>
+          <snapshots>
+            <enabled>true</enabled>
+            <updatePolicy>always</updatePolicy>
+          </snapshots>
+        </pluginRepository>
+
+        <pluginRepository>
+          <id>aliyun-plugin-mirror</id>
+          <url>https://maven.aliyun.com/repository/public/</url>
+          <releases>
+            <enabled>true</enabled>
+            <updatePolicy>always</updatePolicy>
+          </releases>
+          <snapshots>
+            <enabled>true</enabled>
+            <updatePolicy>always</updatePolicy>
+          </snapshots>
+        </pluginRepository>
+
+        <pluginRepository>
+          <id>huaweicloud-plugin-mirror</id>
+          <url>https://repo.huaweicloud.com/repository/maven/</url>
+          <releases>
+            <enabled>true</enabled>
+            <updatePolicy>always</updatePolicy>
+          </releases>
+          <snapshots>
+            <enabled>true</enabled>
+            <updatePolicy>always</updatePolicy>
+          </snapshots>
+        </pluginRepository>
+
+        <pluginRepository>
+          <id>scijava-plugin-mirror</id>
+          <url>maven.scijava.org/content/repositories/public/</url>
+          <releases>
+            <enabled>true</enabled>
+            <updatePolicy>always</updatePolicy>
+          </releases>
+          <snapshots>
+            <enabled>true</enabled>
+            <updatePolicy>always</updatePolicy>
+          </snapshots>
+        </pluginRepository>
+
+      </pluginRepositories>
+    </profile>
+  </profiles>
+
+  <activeProfiles>
+    <activeProfile>internal</activeProfile>
+  </activeProfiles>
+
+</settings>
