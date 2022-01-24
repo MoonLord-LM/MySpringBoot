@@ -54,6 +54,10 @@ public class DemoController {
         logger.info("location: {}", location);
         logger.info("file: {}", Class.forName(className).getProtectionDomain().getCodeSource().getLocation().getFile());
 
+        Class<?> tmp = Class.forName("com.alibaba.fastjson.JSON");
+        logger.info("location: {}", tmp.getProtectionDomain().getCodeSource().getLocation());
+        logger.info("loader: {}", tmp.getProtectionDomain().getClassLoader());
+
         String fileName = location.toString().substring(location.toString().lastIndexOf("/BOOT-INF/lib/") + "/BOOT-INF/lib/".length());
         fileName = fileName.replace(".jar!/", ".jar");
         fileName = fileName.substring(fileName.lastIndexOf("/") + "/".length());
