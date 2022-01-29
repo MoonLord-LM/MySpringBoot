@@ -63,15 +63,6 @@
                 <scope>import</scope>
             </dependency>
 
-            <!-- https://mvnrepository.com/artifact/com.alibaba.cloud/spring-cloud-alibaba-dependencies -->
-            <dependency>
-                <groupId>com.alibaba.cloud</groupId>
-                <artifactId>spring-cloud-alibaba-dependencies</artifactId>
-                <version>2.2.7.RELEASE</version>
-                <type>pom</type>
-                <scope>import</scope>
-            </dependency>
-
             <!-- https://mvnrepository.com/artifact/org.springframework.security/spring-security-bom -->
             <dependency>
                 <groupId>org.springframework.security</groupId>
@@ -104,6 +95,23 @@
                 <groupId>org.springframework.cloud</groupId>
                 <artifactId>spring-cloud-openfeign-dependencies</artifactId>
                 <version>2.2.10.RELEASE</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+
+            <!-- https://mvnrepository.com/artifact/org.mybatis.spring.boot/mybatis-spring-boot -->
+            <dependency>
+                <groupId>org.mybatis.spring.boot</groupId>
+                <artifactId>mybatis-spring-boot</artifactId>
+                <version>2.2.1</version>
+                <type>pom</type>
+            </dependency>
+
+            <!-- https://mvnrepository.com/artifact/com.alibaba.cloud/spring-cloud-alibaba-dependencies -->
+            <dependency>
+                <groupId>com.alibaba.cloud</groupId>
+                <artifactId>spring-cloud-alibaba-dependencies</artifactId>
+                <version>2.2.7.RELEASE</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
