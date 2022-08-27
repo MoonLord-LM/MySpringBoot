@@ -1,7 +1,3 @@
-/*
- * Copyright (c) Huawei Technologies Co., Ltd. 2017-2021. All rights reserved.
- */
-
 package com.huawei.cloud.zuul.gateway.filters.pre;
 
 import org.slf4j.Logger;
@@ -26,10 +22,7 @@ import java.util.Locale;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
- * 跨域访问过滤器
- * 默认允许所有从 .huawei.com 来的跨域请求
- *
- * 要注意，不能直接拦截和处理所有的 Options 请求，WebDAV 相关的请求头同样需要使用到 Options 请求
+ * 跨域访问过滤器，要注意，不能直接拦截和处理所有的 Options 请求，WebDAV 相关的请求头同样需要使用到 Options 请求
  * 例如 Excel 在线编辑：ms-excel:ofe|u| + 文件地址
  */
 @Component
@@ -39,7 +32,7 @@ public class CorsFilter implements Filter {
     private static final Logger logger = LoggerFactory.getLogger(CorsFilter.class);
 
     private static final String[] DEFAULT_TRUST_DOMAIN_SUFFIXES = new String[] {
-            ".huawei.com"
+            ".xxxxxx.com"
     };
 
     private static final String[] DEFAULT_EXPOSE_HEADERS = new String[] {
