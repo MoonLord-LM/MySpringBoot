@@ -1,10 +1,10 @@
-package cn.moonlord.springboot.starterweb;
+package cn.moonlord.springboot;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class SpringBootStarterWebApplicationTests {
+class ApplicationTests {
 
     @Test
     void contextLoads() {
