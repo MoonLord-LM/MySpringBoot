@@ -1,9 +1,12 @@
 # MySpringBoot
 Spring Boot Demo Projects
 
-[![Java CI with Maven](https://github.com/MoonLord-LM/MySpringBoot/actions/workflows/maven.yml/badge.svg)](https://github.com/MoonLord-LM/MySpringBoot/actions/workflows/maven.yml)
+[![Maven with JDK 8](https://github.com/MoonLord-LM/MySpringBoot/actions/workflows/maven-jdk8.yml/badge.svg)](https://github.com/MoonLord-LM/MySpringBoot/actions/workflows/maven-jdk8.yml)
+[![Maven with JDK 11](https://github.com/MoonLord-LM/MySpringBoot/actions/workflows/maven-jdk11.yml/badge.svg)](https://github.com/MoonLord-LM/MySpringBoot/actions/workflows/maven-jdk11.yml)
+[![Maven with JDK 17](https://github.com/MoonLord-LM/MySpringBoot/actions/workflows/maven-jdk17.yml/badge.svg)](https://github.com/MoonLord-LM/MySpringBoot/actions/workflows/maven-jdk17.yml)
+[![Code check with CodeQL](https://github.com/MoonLord-LM/MySpringBoot/actions/workflows/codeql.yml/badge.svg)](https://github.com/MoonLord-LM/MySpringBoot/actions/workflows/codeql.yml)
 
-# Build in Linux  
+# Build in Linux
 
     mkdir -m 777 -p '/home/github' && cd '/home/github'
     git clone 'https://github.com/MoonLord-LM/MySpringBoot.git'
@@ -11,7 +14,7 @@ Spring Boot Demo Projects
     git pull -v --progress 'origin'
     mvn -B -U -e install --file 'parent/pom.xml' && mvn -B -U -e install --file 'pom.xml'
 
-# Build in Windows  
+# Build in Windows
 
     mkdir "C:/Software/GitHub/" & cd "C:/Software/GitHub/"
     git clone "https://github.com/MoonLord-LM/MySpringBoot.git"
@@ -19,7 +22,7 @@ Spring Boot Demo Projects
     git pull -v --progress "origin"
     mvn -B -U -e install --file "parent/pom.xml" & mvn -B -U -e install --file "pom.xml"
 
-# Maven Settings  
+# Maven Settings
 
     <!-- 阿里云公共仓库 -->
     <!-- https://maven.aliyun.com/mvn/guide -->
