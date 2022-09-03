@@ -1,6 +1,6 @@
 :begin
 
-call mvn -B -U -e install --file "pom.xml"
+call mvn -B -U -e install -DcreateChecksum=true --file "pom.xml"
 
 pause
 cls
