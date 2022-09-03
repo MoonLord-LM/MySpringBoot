@@ -18,6 +18,7 @@
         <module>starter-web</module>
         <module>spring-cloud-config-server</module>
         <module>spring-cloud-eureka-server</module>
+        <module>spring-cloud-gateway-server</module>
     </modules>
 
     <repositories>
