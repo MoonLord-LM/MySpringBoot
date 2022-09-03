@@ -17,9 +17,10 @@
     <modules>
         <!--
         <module>demo</module>
-        -->
         <module>server</module>
         <module>client</module>
+        -->
+        <module>spring-boot-starter-web</module>
     </modules>
 
     <repositories>
