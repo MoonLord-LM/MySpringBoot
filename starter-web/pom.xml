@@ -13,6 +13,10 @@
     <groupId>cn.moonlord.springboot</groupId>
     <artifactId>starter-web</artifactId>
 
+    <properties>
+        <start-class>cn.moonlord.springboot.Application</start-class>
+    </properties>
+
     <dependencies>
 
         <dependency>
