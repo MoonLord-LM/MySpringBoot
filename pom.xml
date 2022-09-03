@@ -15,11 +15,6 @@
     <packaging>pom</packaging>
 
     <modules>
-        <!--
-        <module>demo</module>
-        <module>server</module>
-        <module>client</module>
-        -->
         <module>starter-web</module>
         <module>spring-cloud-config-server</module>
     </modules>
