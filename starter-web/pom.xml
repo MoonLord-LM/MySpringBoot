@@ -28,6 +28,21 @@
 
     </dependencies>
 
+    <repositories>
+        <repository>
+            <id>moonlord-github</id>
+            <url>https://github.moonlord.cn/maven/</url>
+            <releases>
+                <enabled>true</enabled>
+                <updatePolicy>always</updatePolicy>
+            </releases>
+            <snapshots>
+                <enabled>true</enabled>
+                <updatePolicy>always</updatePolicy>
+            </snapshots>
+        </repository>
+    </repositories>
+
     <build>
         <plugins>
             <plugin>
