@@ -13,10 +13,6 @@
     <groupId>cn.moonlord.springboot</groupId>
     <artifactId>spring-cloud-gateway-server</artifactId>
 
-    <properties>
-        <start-class>cn.moonlord.springboot.Application</start-class>
-    </properties>
-
     <dependencies>
 
         <dependency>
@@ -62,6 +58,16 @@
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
+                <configuration>
+                    <mainClass>cn.moonlord.springboot.Application</mainClass>
+                </configuration>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>repackage</goal>
+                        </goals>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
     </build>
