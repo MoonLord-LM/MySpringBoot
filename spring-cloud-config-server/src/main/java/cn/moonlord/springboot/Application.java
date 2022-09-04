@@ -27,6 +27,7 @@ public class Application {
     public static class CustomEnvironmentRepository implements EnvironmentRepository {
         @Override
         public Environment findOne(String application, String profile, String label) {
+            logger.info("Environment application: {}, profile: {}, label: {}", application, profile, label);
             Environment environment = new Environment(application, profile);
             Map<String, String> properties1 = new HashMap<>();
             properties1.put("application", application);
