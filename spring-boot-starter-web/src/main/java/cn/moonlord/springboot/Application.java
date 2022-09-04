@@ -8,6 +8,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.HashMap;
+import java.util.Map;
+
 @SpringBootApplication
 @RestController
 public class Application {
@@ -19,9 +22,11 @@ public class Application {
     }
 
     @RequestMapping("/")
-    public String hello(@RequestParam(value = "name", defaultValue = "world") String name) {
+    public Map<String, String> hello(@RequestParam(value = "name", defaultValue = "world") String name) {
         logger.info("hello {}", name);
-        return String.format("hello %s", name);
+        HashMap<String, String> result = new HashMap<>();
+        result.put("hello", name);
+        return result;
     }
 
 }
