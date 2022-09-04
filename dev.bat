@@ -15,6 +15,7 @@ start java -jar "target/spring-cloud-eureka-server-0.0.1-SNAPSHOT.jar" --server.
  --eureka.client.service-url.defaultZone=http://localhost:8761/eureka/,http://127.0.0.1:8762/eureka/ ^
  --eureka.client.fetch-registry=true ^
  --eureka.client.register-with-eureka=true ^
+ --eureka.instance.prefer-ip-address=false ^
  --eureka.instance.hostname=localhost
 cd "../"
 
@@ -24,6 +25,7 @@ start java -jar "target/spring-cloud-eureka-server-0.0.1-SNAPSHOT.jar" --server.
  --eureka.client.service-url.defaultZone=http://localhost:8761/eureka/,http://127.0.0.1:8762/eureka/ ^
  --eureka.client.fetch-registry=true ^
  --eureka.client.register-with-eureka=true ^
+ --eureka.instance.prefer-ip-address=false ^
  --eureka.instance.hostname=127.0.0.1
 cd "../"
 
