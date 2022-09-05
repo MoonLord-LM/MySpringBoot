@@ -23,8 +23,7 @@ public class CustomInstanceExchangeFilterFunction implements InstanceExchangeFil
         return next.exchange(request).doOnSubscribe(new Consumer<Subscription>() {
             @Override
             public void accept(Subscription subscription) {
-                logger.info("filter instance: {} request: {} next: {} subscription: {}", instance, request, next, subscription);
-                logger.info("filter method: {} instance: {} url: {}", request.method(), instance.getId(), request.url());
+                logger.info("filter: {} ({}) {} {}", instance.getRegistration().getName(), instance.getId(), request.method(), request.url());
             }
         });
     }

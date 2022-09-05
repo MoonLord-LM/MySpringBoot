@@ -23,9 +23,9 @@ public class CustomEventNotifier extends AbstractEventNotifier {
     protected Mono<Void> doNotify(InstanceEvent event, Instance instance) {
         return Mono.fromRunnable(() -> {
             if (event instanceof InstanceStatusChangedEvent) {
-                logger.info("doNotify {} ({}) {} to {}", instance.getRegistration().getName(), event.getInstance(), event.getType(), ((InstanceStatusChangedEvent) event).getStatusInfo().getStatus());
+                logger.info("doNotify: {} ({}) {} to {}", instance.getRegistration().getName(), event.getInstance(), event.getType(), ((InstanceStatusChangedEvent) event).getStatusInfo().getStatus());
             } else {
-                logger.info("doNotify {} ({}) {}", instance.getRegistration().getName(), event.getInstance(), event.getType());
+                logger.info("doNotify: {} ({}) {}", instance.getRegistration().getName(), event.getInstance(), event.getType());
             }
         });
     }
