@@ -35,6 +35,12 @@ start java -jar "target/spring-cloud-gateway-server-0.0.1-SNAPSHOT.jar" --server
  --eureka.client.service-url.defaultZone=http://localhost:8761/eureka/,http://127.0.0.1:8762/eureka/
 cd "../"
 
+cd "spring-boot-admin-server"
+start java -jar "target/spring-boot-admin-server-0.0.1-SNAPSHOT.jar" --server.port=9000 ^
+ --management.endpoints.web.exposure.include=* ^
+ --eureka.client.service-url.defaultZone=http://localhost:8761/eureka/,http://127.0.0.1:8762/eureka/
+cd "../"
+
 pause
 cls
 goto :begin
