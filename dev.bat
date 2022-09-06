@@ -4,6 +4,7 @@
 cd "spring-cloud-config-server" && call mvn clean package && cd "../"
 cd "spring-cloud-eureka-server" && call mvn clean package && cd "../"
 cd "spring-cloud-gateway-server" && call mvn clean package && cd "../"
+cd "spring-boot-admin-server" && call mvn clean package && cd "../"
 
 
 cd "spring-cloud-config-server"
