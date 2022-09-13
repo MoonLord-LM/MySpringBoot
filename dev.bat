@@ -54,6 +54,20 @@ start java -jar "./target/spring-boot-admin-server-0.0.1-SNAPSHOT.jar" --server.
  --eureka.client.service-url.defaultZone=http://localhost:8761/eureka/,http://127.0.0.1:8762/eureka/
 cd "../"
 
+cd "spring-cloud-starter-web"
+start java -jar "./target/spring-cloud-starter-web-0.0.1-SNAPSHOT.jar" --server.port=8081 ^
+ --management.endpoints.web.exposure.include=* ^
+ --logging.file.name=./target/spring-cloud-starter-web-0.0.1-SNAPSHOT-8081.log ^
+ --eureka.client.service-url.defaultZone=http://localhost:8761/eureka/,http://127.0.0.1:8762/eureka/
+cd "../"
+
+cd "spring-cloud-starter-web"
+start java -jar "./target/spring-cloud-starter-web-0.0.1-SNAPSHOT.jar" --server.port=8082 ^
+ --management.endpoints.web.exposure.include=* ^
+ --logging.file.name=./target/spring-cloud-starter-web-0.0.1-SNAPSHOT-8082.log ^
+ --eureka.client.service-url.defaultZone=http://localhost:8761/eureka/,http://127.0.0.1:8762/eureka/
+cd "../"
+
 
 pause
 cls
