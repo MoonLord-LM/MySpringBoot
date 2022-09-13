@@ -20,6 +20,7 @@
         <module>spring-cloud-eureka-server</module>
         <module>spring-cloud-gateway-server</module>
         <module>spring-boot-admin-server</module>
+        <module>spring-boot-starter-web</module>
     </modules>
 
     <repositories>
