@@ -1,10 +1,11 @@
 :begin
 
 
-cd "spring-cloud-config-server" && call mvn clean package && cd "../"
-cd "spring-cloud-eureka-server" && call mvn clean package && cd "../"
-cd "spring-cloud-gateway-server" && call mvn clean package && cd "../"
-cd "spring-boot-admin-server" && call mvn clean package && cd "../"
+call mvn -B -U -e install --file "pom.xml" ^
+ -DcreateChecksum=true ^
+ -Dmaven.wagon.http.ssl.insecure=true ^
+ -Dmaven.wagon.http.ssl.allowall=true ^
+ -Dmaven.wagon.http.ssl.ignore.validity.dates=true
 
 
 cd "spring-cloud-config-server"
