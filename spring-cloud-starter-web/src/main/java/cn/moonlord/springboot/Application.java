@@ -9,6 +9,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.cloud.netflix.eureka.EnableEurekaClient;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URL;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -19,7 +23,13 @@ public class Application {
 
     private static final Logger logger = LoggerFactory.getLogger(Application.class);
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws UnsupportedEncodingException {
+        String log = "";
+        for (Character controlCharacter : CustomLogbackMessageConverter.controlCharacters) {
+            log += controlCharacter;
+        }
+        logger.info("Application log: " + URLEncoder.encode(log, String.valueOf(StandardCharsets.UTF_8)));
+
         SpringApplication.run(Application.class, args);
     }
 

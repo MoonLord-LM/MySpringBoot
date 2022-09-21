@@ -22,7 +22,7 @@ public class CustomLogbackMessageConverter extends MessageConverter {
     // https://en.wikipedia.org/wiki/C0_and_C1_control_codes
     // %00%01%02%03%04%05%06%07%08%09%0A%0B%0C%0D%0E%0F%10%11%12%13%14%15%16%17%18%19%1A%1B%1C%1D%1E%1F%7F%80%81%82%83%84%85%86%87%88%89%8A%8B%8C%8D%8E%8F%90%91%92%93%94%95%96%97%98%99%9A%9B%9C%9D%9E%9F
     // %C2%85
-    private static final List<Character> controlCharacters = Arrays.asList(
+    public static final List<Character> controlCharacters = Arrays.asList(
             (char) 0x00,  //  NUL     \u0000
             (char) 0x01,  //  SOH     \u0001
             (char) 0x02,  //  STX     \u0002
