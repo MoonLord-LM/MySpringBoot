@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+
+    <!--  自定义日志防护 -->
+    <!-- https://logback.qos.ch/manual/layouts.html -->
+    <conversionRule conversionWord="m" converterClass="cn.moonlord.springboot.CustomLogbackMessageConverter" />
+    <conversionRule conversionWord="msg" converterClass="cn.moonlord.springboot.CustomLogbackMessageConverter" />
+    <conversionRule conversionWord="message" converterClass="cn.moonlord.springboot.CustomLogbackMessageConverter" />
+
+    <!-- 默认配置 -->
+    <!-- https://github.com/spring-projects/spring-boot/blob/main/spring-boot-project/spring-boot/src/main/resources/org/springframework/boot/logging/logback/base.xml -->
+    <include resource="org/springframework/boot/logging/logback/base.xml"/>
+
+</configuration>

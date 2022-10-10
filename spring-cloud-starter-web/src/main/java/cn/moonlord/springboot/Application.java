@@ -23,13 +23,7 @@ public class Application {
 
     private static final Logger logger = LoggerFactory.getLogger(Application.class);
 
-    public static void main(String[] args) throws UnsupportedEncodingException {
-        String log = "";
-        for (Character controlCharacter : CustomLogbackMessageConverter.controlCharacters) {
-            log += controlCharacter;
-        }
-        logger.info("Application log: " + URLEncoder.encode(log, String.valueOf(StandardCharsets.UTF_8)));
-
+    public static void main(String[] args) {
         SpringApplication.run(Application.class, args);
     }
 
