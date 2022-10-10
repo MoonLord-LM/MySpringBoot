@@ -40,7 +40,7 @@ public class CustomLogbackMessageConverter extends MessageConverter {
         // replace arguments
         Object[] argumentArray = event.getArgumentArray();
         for (int i = 0; i < argumentArray.length; i++) {
-            if (argumentArray[i] instanceof String || argumentArray[i] instanceof Character) {
+            if (argumentArray[i] instanceof String || argumentArray[i] instanceof StringBuilder || argumentArray[i] instanceof StringBuffer || argumentArray[i] instanceof Character) {
                 String argument = argumentArray[i].toString();
                 argument = getNoSensitiveWordsString(argument, sensitiveWords);
                 argument = getControlSafeString(argument);

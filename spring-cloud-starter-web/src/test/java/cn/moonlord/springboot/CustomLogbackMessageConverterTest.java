@@ -82,12 +82,23 @@ public class CustomLogbackMessageConverterTest {
 
     @Test
     public void test() {
+        CharSequence tmp1 = "\0\b\t\n\f\r";
+        logger.info("控制字符测试 \0\b\t\n\f\r {} {}", tmp1, tmp1.getClass().getSimpleName());
+
+        StringBuilder tmp2 = new StringBuilder("\0\b\t\n\f\r");
+        logger.info("控制字符测试 \0\b\t\n\f\r {} {}", tmp2, tmp2.getClass().getSimpleName());
+
+        StringBuffer tmp3 = new StringBuffer("\0\b\t\n\f\r");
+        logger.info("控制字符测试 \0\b\t\n\f\r {} {}", tmp3, tmp3.getClass().getSimpleName());
+
         logger.info("控制字符测试 \0\b\t\n\f\r {}", "\0\b\t\n\f\r");
+
         logger.info("敏感数据测试 password: {}", "123456");
         logger.info("敏感数据测试 secret: {}", "123456");
         logger.info("敏感数据测试 token: {}", "123456");
         logger.info("敏感数据测试 phone: {}", "123456");
         logger.info("敏感数据测试 email: {}", "123456");
+
         for (Character controlCharacter : controlCharacters) {
             logger.info("{}", controlCharacter);
         }
