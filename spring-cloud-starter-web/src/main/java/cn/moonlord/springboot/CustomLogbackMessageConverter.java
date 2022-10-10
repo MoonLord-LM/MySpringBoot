@@ -48,6 +48,15 @@ public class CustomLogbackMessageConverter extends MessageConverter {
         return formattedMessage;
     }
 
+    public static String getNoSensitiveWordsString(String source, List<String> sensitiveWords) {
+        for (String sensitiveWord : sensitiveWords) {
+            if (source.contains(sensitiveWord)) {
+                return source.substring(0, source.indexOf(sensitiveWord)) + "/*** sensitive data [ " + sensitiveWord + " ] is hidden ***/";
+            }
+        }
+        return source;
+    }
+
     public static String getControlSafeString(String source) {
         StringBuilder result = new StringBuilder();
         for (int i = 0; i < source.length(); i++) {
@@ -66,15 +75,6 @@ public class CustomLogbackMessageConverter extends MessageConverter {
             }
         }
         return result.toString();
-    }
-
-    public static String getNoSensitiveWordsString(String source, List<String> sensitiveWords) {
-        for (String sensitiveWord : sensitiveWords) {
-            if (source.contains(sensitiveWord)) {
-                return source.substring(0, source.indexOf(sensitiveWord)) + "/*** sensitive data [ " + sensitiveWord + " ] is hidden ***/";
-            }
-        }
-        return source;
     }
 
 }
