@@ -30,23 +30,6 @@ public class CustomLogbackMessageConverter extends MessageConverter {
         }
     }
 
-    /**
-     * strict / lax
-     * @param config String
-     */
-    @Value("${logback.converter.safe-level: strict }")
-    public void setSafeLevel(String config) {
-        config = config.trim();
-        if (StringUtils.hasLength(config)) {
-            List<String> words = Arrays.asList(config.split(","));
-            for (int i = 0; i < words.size(); i++) {
-                words.set(i, words.get(i).trim());
-            }
-            sensitiveWords.addAllAbsent(words);
-            sensitiveWords.removeIf(word -> !words.contains(word));
-        }
-    }
-
     @Override
     public String convert(ILoggingEvent event) {
         // replace message
